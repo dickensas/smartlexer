@@ -13,7 +13,7 @@ Download JavaFX
 
 Change the build.gradle.kts accordingly
 
-"--module-path=C:\\MyFiles\\javafx-sdk-11.0.2\\lib"
+`"--module-path=C:\\MyFiles\\javafx-sdk-11.0.2\\lib"`
 
  
 ## Example Use Case (SQL)
