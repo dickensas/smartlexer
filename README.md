@@ -64,3 +64,22 @@ This file should be named as "database.json" and put in the root folder
 - [ ] 6 - Rule engine integration, like drools.... etc
 - [ ] 7 - Emit functions to the developer for custom code
 - [ ] 8 - Advanced intent beautifier  
+
+## Usage
+The code is ready to execute
+
+If you have gradle in path, then invoke gradle as
+
+     gradle assemble
+
+If you have wrapper for linux
+
+     ./gradlew assemble
+
+If you have wrapper for windows
+
+     .\gradlew assemble
+
+Then execute bellow task to start the OpenGL Window
+
+     .\gradlew run
