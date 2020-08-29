@@ -15,3 +15,5 @@ gradle-app.setting
 /flow_parser.js
 /bin/
 /.settings/
+/.classpath
+/.project
