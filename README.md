@@ -24,7 +24,7 @@ INSTR('Customer', 't')
 
 In case if the function name only needs to be replaced, then it is easy
 
-But, here the paramter 1 becomes 2 and 2 becomes 1
+But, here the parameter 1 becomes 2 and 2 becomes 1
 
 ## Template Methodology
 Currently experimenting with a compilcated JSON structure like a database
