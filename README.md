@@ -4,14 +4,17 @@ Smart way to replace and transform your code to a different code
 The primary objective of this utility is to transform parameters and rename functions of an arbitrary source code statically
 
 ## Mandatory dependencies
-This application uses flow_parser and JavaFX
-https://cdn.jsdelivr.net/npm/flow-parser@0.132.0/flow_parser.js
+
+### 1.) Flow Parser
+This application uses flow_parser download from 
+[CDN flow_parser.js](https://cdn.jsdelivr.net/npm/flow-parser@0.132.0/flow_parser.js)
 
 `flow_parser.js` This file needs to be copied and pasted to the root of the folder
 
-Download JavaFX
-
-Change the build.gradle.kts accordingly
+### 2.) JavaFX
+Download JavaFX from 
+[JavaFX SDK](https://gluonhq.com/products/javafx/)<br/>
+Change the `build.gradle.kts` accordingly
 
 `"--module-path=C:\\MyFiles\\javafx-sdk-11.0.2\\lib"`
 
@@ -19,10 +22,10 @@ Change the build.gradle.kts accordingly
 ## Example Use Case (SQL)
 I have chosen SQL to transform from SQL server function to PLSL function
 
-CHARINDEX('t', 'Customer')<br/>
-INSTR('Customer', 't')
+`CHARINDEX('t', 'Customer')`<br/>
+`INSTR('Customer', 't')`
 
-In case if the function name only needs to be replaced, then it is easy
+In case, if the function name only needs to be replaced, then it is easy
 
 But, here the parameter 1 becomes 2 and 2 becomes 1
 
@@ -63,7 +66,9 @@ This file should be named as "database.json" and put in the root folder
 - [ ] 5 - Detect SQL JOIN connectivity
 - [ ] 6 - Rule engine integration, like drools.... etc
 - [ ] 7 - Emit functions to the developer for custom code
-- [ ] 8 - Advanced intent beautifier  
+- [ ] 8 - Advanced intent beautifier
+- [ ] 9 - EXCEL/CSV as template data source
+- [ ] 10  - Test programming languages like Java, Kotlin, C... etc.,
 
 ## Usage
 The code is ready to execute
