@@ -150,25 +150,32 @@ function indend(SQL){
 	if(!parsingXML && (intended_SQL[intended_SQL.length-1] + SQL) .length>=database.max){
 		doWrap();
 	}
+	
+	{
+		let _pend = intended_SQL[intended_SQL.length-1];
+		if(_pend && _pend[_pend.length-1] == ' ' && SQL[0] == ' '){
+			_pend = _pend.substr(0,_pend.length-1);
+			intended_SQL[intended_SQL.length-1] = _pend;
+		}
+	}
 	intended_SQL[intended_SQL.length-1] = 
 	intended_SQL[intended_SQL.length-1] + SQL;
 }
 
-function toString(ast,nsp) {
-	let localStr = " ";
-	if(nsp!=null && nsp==true){
-		localStr = "";
-	}
-	
+function toString(ast,nsp) {	
 	if(ast.length){
 		for(let i=0;i<ast.length;i++){
-			indend(toString(ast[i]));
+			toString(ast[i]);
 		}
 	}else{
-		let _ast = ast;
+		
 		if(ast.expression){
-			_ast = ast.expression;
+			toString(ast.expression)
+			return;
+			//_ast = ast.expression;
 		}
+		
+		let _ast = ast;
 		if(_ast.type === "CallExpression") {
 			indend(_ast.callee.name)
 			indend("(");
@@ -176,7 +183,7 @@ function toString(ast,nsp) {
 		
 		if(_ast.type === "CallExpression") {
 			for(let j=0;j<_ast.arguments.length;j++){
-				indend(toString(_ast.arguments[j]))
+				toString(_ast.arguments[j])
 				if(j!=_ast.arguments.length-1){
 					indend(",")
 				}
@@ -189,14 +196,14 @@ function toString(ast,nsp) {
 		}else if(_ast.type === "ImportDeclaration" ) {
 			indend("import ")
 			for(let j=0;j<_ast.specifiers.length;j++){
-				indend(toString(_ast.specifiers[j],true).trim())
+				toString(_ast.specifiers[j])
 				//if(j!=_ast.specifiers.length-1){
 					indend(".")
 				//}
 			}
 			
 		}else if(_ast.type === "ImportDefaultSpecifier" ) {
-			indend(toString(_ast.local,true).trim())
+			toString(_ast.local)
 		}
 		//ImportDeclaration
 		else if(_ast.type === "Identifier" ) {
@@ -207,12 +214,26 @@ function toString(ast,nsp) {
 				_ast.name = _ast.name.toUpperCase();
 				queryScope.push(true);
 			}
-			let _pend = intended_SQL[intended_SQL.length-1];
-			if(_pend && _pend.indexOf(". ", _pend.length - ". ".length) !== -1){
-				_pend = _pend.substr(0,_pend.length-1);
-				intended_SQL[intended_SQL.length-1] = _pend;
+			{
+				let _pend = intended_SQL[intended_SQL.length-1];
+				if(_pend && _pend.indexOf(". ", _pend.length - ". ".length) !== -1){
+					_pend = _pend.substr(0,_pend.length-1);
+					intended_SQL[intended_SQL.length-1] = _pend;
+				}
 			}
-			indend(_ast.name)
+			{
+				let _pend = intended_SQL[intended_SQL.length-1];
+				if(_pend && _pend.indexOf(" .", _pend.length - " .".length) !== -1){
+					_pend = _pend.substr(0,_pend.length-2) +".";
+					intended_SQL[intended_SQL.length-1] = _pend;
+				}
+			}
+
+			if(typeof nsp === "boolean" && nsp===true)
+				indend(_ast.name)
+			else
+				indend(" " +_ast.name + " ")
+
 			if(isGutterKeyword(_ast.name)){
 				spaces = spaces + _ast.name.length + 1;
 			}
@@ -223,29 +244,29 @@ function toString(ast,nsp) {
 				foundFrom = true;
 			}
 		}else if(_ast.type === "BinaryExpression" ) {
-			indend(toString(_ast.left))
+			toString(_ast.left)
 			indend(_ast.operator)
 			if(isWrapBy(_ast.operator)){
 				doWrap()
 			}
-			indend(toString(_ast.right))
+			toString(_ast.right)
 		}else if(_ast.type === "AssignmentExpression" ) {
 				if(ansiAlias && !foundFrom){
-					indend(toString(_ast.right))
+					toString(_ast.right)
 					indend(" ")
-					indend(toString(_ast.left))
+					toString(_ast.left)
 				}else{
-					indend(toString(_ast.left))
+					toString(_ast.left)
 					indend(_ast.operator + " ")
-					indend(toString(_ast.right))
+					toString(_ast.right)
 				}
 		}else if(_ast.type === "MemberExpression" ) {
-			indend(toString(_ast.object,true).trim())
+			toString(_ast.object)
 			indend(".")
-			indend(toString(_ast.property,true).trim())
+			toString(_ast.property,true)
 		}else if(_ast.type === "SequenceExpression" ) {
 			for(let j=0;j<_ast.expressions.length;j++){
-				indend(toString(_ast.expressions[j]))
+				toString(_ast.expressions[j])
 				if(j!=_ast.expressions.length-1){
 					indend(",")
 					if(isWrapBy(",")){
@@ -258,7 +279,6 @@ function toString(ast,nsp) {
 		if(_ast.type === "CallExpression")
 			indend(")");
 	}
-	return localStr;
 }
 
 function traverse(ast) {
@@ -268,10 +288,9 @@ function traverse(ast) {
 		}
 	}else{
 		let _ast = ast;
-		if(ast.expression){
-			_ast = ast.expression;
-		}
-		if(_ast.type==="CallExpression"){
+		if(_ast.type==="ExpressionStatement"){
+			traverse(_ast.expression);
+		}else if(_ast.type==="CallExpression"){
 			let fFound = frFound(_ast.callee.name);
 			mTemplate(_ast, fFound);
 			for(let j=0;j<_ast.arguments.length;j++){
@@ -328,7 +347,7 @@ function getJsConnector() {
 
 function stripXML(data) {
 	const regexw = /\.\*/gi;
-	data = data.replace(regexw, ' __WILD__');
+	data = data.replace(regexw, '.__WILD__');
 		
 	if(
 	data.indexOf("<")!=-1 &&
@@ -344,28 +363,32 @@ function stripXML(data) {
 	){
 		//console.log(data);
 		console.log("XML Detected");
+		const regexns = /\b:\b/gi;
+		data = data.replace(regexns, '__NS__');
+		//console.log(data);
+		
 		const regexqo = /<\?/gi;
-		data = data.replace(regexqo, '__TAGQO__ ');
+		data = data.replace(regexqo, '__TAGQO__');
 		//console.log(data);
 		
 		const regexqc = /\?>/gi;
-		data = data.replace(regexqc, ' __TAGQC__');
+		data = data.replace(regexqc, '__TAGQC__');
 		//console.log(data);
 		
 		const regexco = /<\//gi;
-		data = data.replace(regexco, '__TAGCO__ ');
+		data = data.replace(regexco, '__TAGCO__');
 		//console.log(data);
 		
 		const regexsc = /\/>/gi;
-		data = data.replace(regexsc, ' __TAGSC__');
+		data = data.replace(regexsc, '__TAGSC__');
 		//console.log(data);
 		
 		const regexcc = />/gi;
-		data = data.replace(regexcc, ' __TAGCC__');
+		data = data.replace(regexcc, '__TAGCC__');
 		//console.log(data);
 		
 		const regexo = /</gi;
-		data = data.replace(regexo, '__TAGO__ ');
+		data = data.replace(regexo, '__TAGO__');
 		//console.log(data);
 		
 		
@@ -379,35 +402,31 @@ function stripXML(data) {
 function unstripXML(joinedStr){
 			
 	console.log("XML Detected");
-	const regexqo = /__TAGQO__\s+/gi;
-	joinedStr = joinedStr.replace(regexqo,'<?');
-	//console.log(data);
+	//console.log(joinedStr);
+	const regexsc = /__TAGSC__/gi;
+	joinedStr = joinedStr.replace(regexsc, '/>\n');
 	
-	const regexqc = /\s+__TAGQC__/gi;
+	const regexcc = /__TAGCC__/gi;
+	joinedStr = joinedStr.replace(regexcc, '>\n');
+	
+	const regexqc = /__TAGQC__/gi;
 	joinedStr = joinedStr.replace(regexqc, '?>\n');
 	
-	const regexqc1 = /\__TAGQC__/gi;
-	joinedStr = joinedStr.replace(regexqc1, '?>\n');
-	//console.log(data);
+	const regexw = /__WILD__/gi;
+	joinedStr = joinedStr.replace(regexw, '*');
 	
-	const regexco = /__TAGCO__\s+/gi;
+	const regexco = /__TAGCO__/gi;
 	joinedStr = joinedStr.replace(regexco, '</');
-	//console.log(data);
 	
-	const regexsc = /\s+__TAGSC__/gi;
-	joinedStr = joinedStr.replace(regexsc, '/>\n');
-	//console.log(data);
-	
-	const regexcc = /\s+__TAGCC__/gi;
-	joinedStr = joinedStr.replace(regexcc, '>\n');
-	//console.log(data);
-	
-	const regexo = /__TAGO__\s+/gi;
+	const regexo = /__TAGO__/gi;
 	joinedStr = joinedStr.replace(regexo, '<');
-	//console.log(data);
 	
-	const regexw = /\s+__WILD__/gi;
-	joinedStr = joinedStr.replace(regexw, '.*');
+	const regexqo = /__TAGQO__/gi;
+	joinedStr = joinedStr.replace(regexqo,'<?');
+	
+	const regexns = /__NS__/gi;
+	joinedStr = joinedStr.replace(regexns, ':');
+
 	//console.log(joinedStr);
 	return joinedStr;
 }
