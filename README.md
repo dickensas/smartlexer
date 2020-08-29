@@ -29,6 +29,12 @@ But, here the paramter 1 becomes 2 and 2 becomes 1
 ## Template Methodology
 Currently experimenting with a compilcated JSON structure like a database
 
+## Example Output
+
+<p align="center">
+  <img src="docs/static/banner.png">
+</p>
+
 ## TODO
 
 - [x] 1 - Rename a CallExpression 
