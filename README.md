@@ -20,7 +20,7 @@ Change the `build.gradle.kts` accordingly
 
  
 ## Example Use Case (SQL)
-I have chosen SQL to transform from SQL server function to PLSL function
+I have chosen SQL to transform from T-SQL function to PLSQL function
 
 `CHARINDEX('t', 'Customer')`<br/>
 `INSTR('Customer', 't')`
