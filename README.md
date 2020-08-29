@@ -33,7 +33,7 @@ Currently experimenting with a compilcated JSON structure like a database
 &#10240;  <!-- Hack to add whitespace -->
 
 <p align="center">
-  <img src="/dickensas/smartlexer/raw/master/docs/static/banner.png">
+  <img src="/docs/static/screenshot-1.png">
 </p>
 
 ## TODO
