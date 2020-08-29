@@ -85,6 +85,6 @@ If you have wrapper for windows
 
      .\gradlew assemble
 
-Then execute bellow task to start the OpenGL Window
+Then execute bellow task to start the application window
 
      .\gradlew run
