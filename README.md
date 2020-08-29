@@ -3,11 +3,11 @@ Smart way to replace and transform your code to a different code
 
 The primary objective of this utility is to tranform parameters and rename functions of an arbritary code statically
 
-## Technology Used
+## Mandatory dependencies
 This application uses flow_parser and JavaFX
 https://cdn.jsdelivr.net/npm/flow-parser@0.132.0/flow_parser.js
 
-This file needs to be copied and pasted to the root of the folder
+`flow_parser.js` This file needs to be copied and pasted to the root of the folder
 
 Download JavaFX
 
@@ -16,10 +16,10 @@ Change the build.gradle.kts accordingly
 "--module-path=C:\\MyFiles\\javafx-sdk-11.0.2\\lib"
 
  
-## Example (SQL)
-I have chosen SQL to tranform from SQL server function to PLSL function
+## Example Use Case (SQL)
+I have chosen SQL to transform from SQL server function to PLSL function
 
-CHARINDEX('t', 'Customer')
+CHARINDEX('t', 'Customer')<br/>
 INSTR('Customer', 't')
 
 In case if the function name only needs to be replaced, then it is easy
@@ -28,6 +28,24 @@ But, here the paramter 1 becomes 2 and 2 becomes 1
 
 ## Template Methodology
 Currently experimenting with a compilcated JSON structure like a database
+
+    "template":
+    [
+        {
+            "fr":
+            {
+                "name":"CHARINDEX",
+                "args":["1:L","2:L"]
+            },
+            "to":
+            {
+                "name":"INSTR",
+                "args":["2:L","1:L"]
+            }
+        }
+    ]
+
+This file should be named as "database.json" and put in the root folder
 
 ## Example Output
 &#10240;  <!-- Hack to add whitespace -->
