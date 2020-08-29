@@ -17,3 +17,5 @@ gradle-app.setting
 /.settings/
 /.classpath
 /.project
+/gradlew
+/gradlew.bat

@@ -1,0 +1,74 @@
+{
+"max": 80,
+"spaces": 3,
+"wrapBy":[
+		{"name":"+"},
+		{"name":"THEN"},
+		{"name":"CASE"},
+		{"name":","}
+	],
+"wrapAt":[
+		{"name":"FROM"},
+		{"name":"WHERE"},
+		{"name":"AND"}
+	],
+"DT":
+	[
+		{"name":"INT"},
+		{"name":"NUMERIC"},
+		{"name":"VARCHAR"}
+	],
+"gutter_keywords":
+	[
+		{"name":"SELECT"},
+		{"name":"INSERT"},
+		{"name":"UPDATE"},
+		{"name":"DELETE"},
+		{"name":"CREATE"},
+		{"name":"ALTER"},
+		{"name":"THEN"}
+	],
+"align_keywords":
+	[
+		{"name":"FROM"},
+		{"name":"WHERE"},
+		{"name":"AND"},
+		{"name":"ORDER"},
+		{"name":"GROUP"},
+		{"name":"LEFT"},
+		{"name":"RIGHT"}
+	],
+"template":
+	[
+		{
+			{
+				"fr":
+				{
+					"name":"CHARINDEX",
+					"args":["1:L","2:L"]
+				},
+				"to":
+				{
+					"name":"INSTR",
+					"args":["2:L","1:L"]
+				}
+			},
+			"fr":
+			{
+				"name":"char_length",
+				"args":
+				[
+					"1:CE"
+				]
+			},
+			"to":
+			{
+				"name":"LENGTH",
+				"args":
+				[
+					"1:CE"
+				]
+			}
+		}
+	]
+}
