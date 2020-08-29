@@ -1,7 +1,7 @@
 # Smart Lexer
 Smart way to replace and transform your code to a different code
 
-The primary objective of this utility is to tranform parameters and rename functions of an arbritary code statically
+The primary objective of this utility is to transform parameters and rename functions of an arbitrary source code statically
 
 ## Mandatory dependencies
 This application uses flow_parser and JavaFX
@@ -27,7 +27,7 @@ In case if the function name only needs to be replaced, then it is easy
 But, here the parameter 1 becomes 2 and 2 becomes 1
 
 ## Template Methodology
-Currently experimenting with a compilcated JSON structure like a database
+Currently experimenting with a complicated JSON structure like a database
 
     "template":
     [
