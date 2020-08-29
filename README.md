@@ -69,6 +69,8 @@ This file should be named as "database.json" and put in the root folder
 - [ ] 8 - Advanced intent beautifier
 - [ ] 9 - EXCEL/CSV as template data source
 - [ ] 10  - Test programming languages like Java, Kotlin, C... etc.,
+- [ ] 10  - XML transform facility
+- [ ] 11  - Lex path detection and replace strategy
 
 ## Usage
 The code is ready to execute
