@@ -25,8 +25,7 @@
 		{"name":"UPDATE"},
 		{"name":"DELETE"},
 		{"name":"CREATE"},
-		{"name":"ALTER"},
-		{"name":"THEN"}
+		{"name":"ALTER"}
 	],
 "align_keywords":
 	[
@@ -41,33 +40,27 @@
 "template":
 	[
 		{
+			"fr":
 			{
-				"fr":
-				{
-					"name":"CHARINDEX",
-					"args":["1:L","2:L"]
-				},
-				"to":
-				{
-					"name":"INSTR",
-					"args":["2:L","1:L"]
-				}
+				"name":"CHARINDEX",
+				"args":["1:L","2:L"]
 			},
+			"to":
+			{
+				"name":"INSTR",
+				"args":["2:L","1:L"]
+			}
+		},
+		{
 			"fr":
 			{
 				"name":"char_length",
-				"args":
-				[
-					"1:CE"
-				]
+				"args":["1:CE"]
 			},
 			"to":
 			{
 				"name":"LENGTH",
-				"args":
-				[
-					"1:CE"
-				]
+				"args":["1:CE"]
 			}
 		}
 	]
