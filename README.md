@@ -70,7 +70,7 @@ This file should be named as "database.json" and put in the root folder
 - [ ] 4 - Change Literal to Identifier
 - [ ] 5 - Detect SQL JOIN connectivity
 - [ ] 6 - Rule engine integration, like drools.... etc
-- [ ] 7 - Emit functions to the developer for custom code
+- [x] 7 - Emit functions to the developer for custom code
 - [ ] 8 - Advanced intent beautifier
 - [ ] 9 - EXCEL/CSV as template data source
 - [ ] 10  - Test programming languages like Java, Kotlin, C... etc.,
