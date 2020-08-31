@@ -60,7 +60,7 @@ This file should be named as "database.json" and put in the root folder
 
 ## Documentation
 
-[Wiki Pages](/wiki)
+[Wiki Pages](https://github.com/dickensas/smartlexer/wiki)
 
 ## TODO
 
