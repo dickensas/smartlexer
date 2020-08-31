@@ -6,10 +6,11 @@ The primary objective of this utility is to transform parameters and rename func
 ## Mandatory dependencies
 
 ### 1.) Flow Parser
-This application uses flow_parser download from 
-[CDN flow_parser.js](https://cdn.jsdelivr.net/npm/flow-parser@0.132.0/flow_parser.js)
+This application uses flow-parser, use the below command to install flow-parser
 
-`flow_parser.js` This file needs to be copied and pasted to the root of the folder
+```
+npm install flow-parser --save`
+```
 
 ### 2.) JavaFX
 Download JavaFX from 
@@ -56,6 +57,10 @@ This file should be named as "database.json" and put in the root folder
 <p align="center">
   <img src="/docs/static/screenshot-1.png">
 </p>
+
+## Documentation
+
+[Wiki Pages](/wiki)
 
 ## TODO
 

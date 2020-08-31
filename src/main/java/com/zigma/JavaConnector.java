@@ -50,4 +50,14 @@ public class JavaConnector {
 		TextArea txt = (TextArea) this.scene.lookup("#trgLex");
         txt.setText(sql);
 	}
+	public JSObject emit(JSObject obj) {
+		System.out.println(obj);
+		if(obj.getMember("type")=="MemberExpression") {
+			JSObject object = (JSObject)obj.getMember("object");
+			JSObject property = (JSObject)obj.getMember("property");
+		}else if(obj.getMember("type")=="SequenceExpression") {
+			JSObject expressions = (JSObject)obj.getMember("expressions");
+		}
+		return obj;
+	}
 }

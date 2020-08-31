@@ -1,0 +1,32 @@
+{
+  "name": "smartlexer",
+  "version": "1.0.0",
+  "description": "Smart Lexer",
+  "main": "smartlexer.js",
+  "bin": {
+    "smartlexer": "app.js"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dickensas/smartlexer.git"
+  },
+  "keywords": [
+    "migration",
+    "transliteration"
+  ],
+  "author": "Dickens A S",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dickensas/smartlexer/issues"
+  },
+  "homepage": "https://github.com/dickensas/smartlexer#readme",
+  "dependencies": {
+    "flow-parser": "^0.132.0"
+  }
+}
