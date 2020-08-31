@@ -46,8 +46,8 @@ public class JavaConnector {
 	public void log(String txt) {
 		System.out.println(txt);
 	}
-	public void showSQL(String sql) {
-		TextArea txt = (TextArea) this.scene.lookup("#trgSQL");
+	public void showLex(String sql) {
+		TextArea txt = (TextArea) this.scene.lookup("#trgLex");
         txt.setText(sql);
 	}
 }

@@ -16,11 +16,11 @@ public class Controller implements Initializable{
     }
 	
 	@FXML
-    private void parseSQL(ActionEvent event)
+    private void parseLex(ActionEvent event)
     {
         if(JavaConnector.javascriptConnector!=null){
-        	TextArea txt = (TextArea) JavaConnector.scene.lookup("#srcSQL");
-        	JavaConnector.javascriptConnector.call("parseToSQL", txt.getText());
+        	TextArea txt = (TextArea) JavaConnector.scene.lookup("#srcLex");
+        	JavaConnector.javascriptConnector.call("parseToLex", txt.getText());
         }
     }
 }

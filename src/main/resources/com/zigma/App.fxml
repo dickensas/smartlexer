@@ -17,8 +17,8 @@
 			<children>
 				<HBox VBox.vgrow="ALWAYS">
 					<children>
-						<TextArea fx:id="srcSQL" HBox.hgrow="ALWAYS" />
-						<TextArea fx:id="trgSQL" HBox.hgrow="ALWAYS" />
+						<TextArea fx:id="srcLex" HBox.hgrow="ALWAYS" />
+						<TextArea fx:id="trgLex" HBox.hgrow="ALWAYS" />
 					</children>
 				</HBox>
 			</children>
@@ -28,7 +28,7 @@
 			AnchorPane.rightAnchor="0.0">
 			<center>
 				<Button fx:id="mybutton" maxHeight="50"
-					mnemonicParsing="false" onAction="#parseSQL" prefHeight="50.0"
+					mnemonicParsing="false" onAction="#parseLex" prefHeight="50.0"
 					prefWidth="200.0" text="Button" visible="false" />
 			</center>
 		</BorderPane>

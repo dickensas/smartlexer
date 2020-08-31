@@ -19,3 +19,4 @@ gradle-app.setting
 /.project
 /gradlew
 /gradlew.bat
+/source.sql
