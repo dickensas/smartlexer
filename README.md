@@ -72,7 +72,7 @@ This file should be named as "database.json" and put in the root folder
 - [ ] 10  - XML transform facility
 - [ ] 11  - Lex path detection and replace strategy
 
-## Usage
+## Usage GUI (Requires Java and JavaFX)
 The code is ready to execute
 
 If you have gradle in path, then invoke gradle as
@@ -90,3 +90,11 @@ If you have wrapper for windows
 Then execute bellow task to start the application window
 
      .\gradlew run
+
+## Usage Node.js
+
+     node smartlexer.js <source file>
+     
+## License
+
+[MIT](/LICENSE)
