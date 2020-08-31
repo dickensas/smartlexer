@@ -71,6 +71,7 @@ This file should be named as "database.json" and put in the root folder
 - [ ] 10  - Test programming languages like Java, Kotlin, C... etc.,
 - [ ] 10  - XML transform facility
 - [ ] 11  - Lex path detection and replace strategy
+- [x] 12  - Node.js command line support
 
 ## Usage GUI (Requires Java and JavaFX)
 The code is ready to execute
