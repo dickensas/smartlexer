@@ -1,5 +1,5 @@
 {
-"max": 80,
+"max": 200,
 "spaces": 3,
 "wrapBy":[
 		{"name":"+"},
@@ -10,7 +10,10 @@
 "wrapAt":[
 		{"name":"FROM"},
 		{"name":"WHERE"},
-		{"name":"AND"}
+		{"name":"AND"},
+		{"name":"using"},
+		{"name":"{", "gutter":"+"},
+		{"name":"}", "gutter":"-"}
 	],
 "DT":
 	[

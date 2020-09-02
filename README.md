@@ -77,6 +77,7 @@ This file should be named as "database.json" and put in the root folder
 - [ ] 10  - XML transform facility
 - [ ] 11  - Lex path detection and replace strategy
 - [x] 12  - Node.js command line support
+- [x] 13  - Parse Simple C++ without missing any tokens
 
 ## Usage GUI (Requires Java and JavaFX)
 The code is ready to execute

@@ -28,5 +28,8 @@
   "homepage": "http://dickens.co.in/smart-lexer",
   "dependencies": {
     "flow-parser": "^0.132.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.1.3"
   }
 }

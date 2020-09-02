@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        maven(url="https://maven.java.net/content/repositories/public/")
         mavenCentral()
         jcenter()
         mavenLocal()

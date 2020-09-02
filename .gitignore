@@ -23,3 +23,10 @@ gradle-app.setting
 /node_modules/
 /package-lock.json
 /EmitListener.js
+/aa.txt
+/aa.js
+/.sublime-project
+/.tern-project
+/source2.sql
+/lib/
+/.jshintrc

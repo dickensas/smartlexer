@@ -1,22 +1,24 @@
-let database;
-let template;
+var database={};
+var template={};
+var unranged_tokens = [];
+var ranged_tokens = [];
 
-let finalString = "";
-let level = 0;
-let spaces = 3;
-let tabs = false;
-let intendedFinalString = [];
-let ansiAlias = false;
-let foundFrom = false;
-let queryScope = [];
-let gutter = 0;
-let full_obj = {};
-let parsingXML = false;
+var finalString = "";
+var level = 0;
+var spaces = 3;
+var tabs = false;
+var intendedFinalString = [];
+var ansiAlias = false;
+var foundFrom = false;
+var queryScope = [];
+var gutter = 0;
+var full_obj = {};
+var parsingXML = false;
 
 function isWrapBy(key) {
 	if (!database.wrapBy)
 		return false;
-	for (let i = 0; i < database.wrapBy.length; i++) {
+	for (var i = 0; i < database.wrapBy.length; i++) {
 		if (key.toLowerCase() === database.wrapBy[i].name.toLowerCase())
 			return true;
 	}
@@ -26,24 +28,45 @@ function isWrapBy(key) {
 function isWrapAt(key) {
 	if (!database.wrapAt)
 		return false;
-	for (let i = 0; i < database.wrapAt.length; i++) {
-		if (key.toLowerCase() === database.wrapAt[i].name.toLowerCase())
+	for (var i = 0; i < database.wrapAt.length; i++) {
+		if (key.toLowerCase() === database.wrapAt[i].name.toLowerCase()){
+			if(database.wrapAt[i].gutter==="+"){
+				gutter+=spaces;
+			}else if(database.wrapAt[i].gutter==="-"){
+				gutter-=spaces;
+			}
 			return true;
+		}
 	}
 	return false;
 }
 
+function rangeArangeTokens(tokens){
+	for(var i=0;i<tokens.length;i++){
+		if(tokens[i].range && tokens[i].range.length>1){
+			if(!ranged_tokens[tokens[i].range[0]]) {
+				ranged_tokens[tokens[i].range[0]] = {};
+				if(!ranged_tokens[tokens[i].range[0]][tokens[i].range[1]]){
+					ranged_tokens[tokens[i].range[0]][tokens[i].range[1]]={};
+				}
+				ranged_tokens[tokens[i].range[0]][tokens[i].range[1]] = tokens[i];
+				ranged_tokens[tokens[i].range[0]][tokens[i].range[1]].rangeIndex = i;
+			}
+		}
+	}
+}
+
 function mTemplate(obj, templates, emit) {
-	let pattern_match = true;
-	for (let i = 0; i < templates.length; i++) {
-		let fr_args = templates[i].fr.args;
-		let to_args = templates[i].to.args;
+	var pattern_match = true;
+	for (var i = 0; i < templates.length; i++) {
+		var fr_args = templates[i].fr.args;
+		var to_args = templates[i].to.args;
 		pattern_match = true;
 
-		for (let j = 0; j < fr_args.length; j++) {
-			let arg_from_arr = fr_args[j].split(":");
-			let arg_from_id = parseInt(arg_from_arr[0]);
-			let arg_from_type = arg_from_arr[1];
+		for (var j = 0; j < fr_args.length; j++) {
+			var arg_from_arr = fr_args[j].split(":");
+			var arg_from_id = parseInt(arg_from_arr[0]);
+			var arg_from_type = arg_from_arr[1];
 			if (obj.arguments[arg_from_id - 1]) {
 				if (obj.arguments[arg_from_id - 1].name
 						&& isSP(arg_from_type,
@@ -79,11 +102,11 @@ function mTemplate(obj, templates, emit) {
 		}
 
 		if (pattern_match) {
-			let new_arguments = [];
-			for (let j = 0; j < to_args.length; j++) {
-				let arg_to_arr = to_args[j].split(":");
-				let arg_to_id = parseInt(arg_to_arr[0]);
-				let arg_to_type = arg_to_arr[1];
+			var new_arguments = [];
+			for (var j = 0; j < to_args.length; j++) {
+				var arg_to_arr = to_args[j].split(":");
+				var arg_to_id = parseInt(arg_to_arr[0]);
+				var arg_to_type = arg_to_arr[1];
 				if (obj.arguments[arg_to_id - 1] && arg_to_type === "_EXP"
 						&& arg_to_arr[2] && arg_to_arr[2].length > 0) {
 
@@ -118,7 +141,7 @@ function mTemplate(obj, templates, emit) {
 function isSP(sp, key) {
 	if (!database[sp])
 		return false;
-	for (let i = 0; i < database[sp].length; i++) {
+	for (var i = 0; i < database[sp].length; i++) {
 		if (database[sp][i].name.toLowerCase() == key.toLowerCase()) {
 			return true;
 		}
@@ -127,8 +150,8 @@ function isSP(sp, key) {
 }
 
 function frFound(from) {
-	let templates = [];
-	for (let i = 0; i < database.template.length; i++) {
+	var templates = [];
+	for (var i = 0; i < database.template.length; i++) {
 		if (database.template[i].fr.name === from) {
 			templates.push(database.template[i]);
 		}
@@ -137,7 +160,7 @@ function frFound(from) {
 }
 
 function isGutterKeyword(name) {
-	for (let i = 0; i < database.gutter_keywords.length; i++) {
+	for (var i = 0; i < database.gutter_keywords.length; i++) {
 		if (database.gutter_keywords[i].name.toLowerCase() === name
 				.toLowerCase()) {
 			return true;
@@ -149,9 +172,12 @@ function isGutterKeyword(name) {
 function doWrap(left) {
 	if (left != null && left != 0) {
 		intendedFinalString.push(" ".padStart(left, ' '));
+	} else if(intendedFinalString.length===0){
+		gutter = 0;
+		intendedFinalString.push("");
 	} else {
-		gutter = " ".padStart(spaces, ' ').length;
-		intendedFinalString.push(" ".padStart(spaces, ' '));
+		gutter = " ".padStart(gutter, ' ').length;
+		intendedFinalString.push(" ".padStart(gutter, ' '));
 	}
 }
 
@@ -165,7 +191,7 @@ function indend(finalString) {
 	}
 
 	{
-		let _pend = intendedFinalString[intendedFinalString.length - 1];
+		var _pend = intendedFinalString[intendedFinalString.length - 1];
 		if (_pend && _pend[_pend.length - 1] == ' ' && finalString[0] == ' ') {
 			_pend = _pend.substr(0, _pend.length - 1);
 			intendedFinalString[intendedFinalString.length - 1] = _pend;
@@ -175,9 +201,23 @@ function indend(finalString) {
 			+ finalString;
 }
 
+function nextToken(range){
+	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
+	var nextValue = unranged_tokens[rangeIndex+1].value;
+	if(nextValue===";"){
+		indend(";");
+		doWrap();
+	}
+}
+
+function getToken(range){
+	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
+	return nextValue = unranged_tokens[rangeIndex].value;
+}
+
 function toString(ast, nsp) {
 	if (ast.length) {
-		for (let i = 0; i < ast.length; i++) {
+		for (var i = 0; i < ast.length; i++) {
 			toString(ast[i]);
 		}
 	} else {
@@ -185,24 +225,41 @@ function toString(ast, nsp) {
 		if (ast.type === "CallExpression") {
 			indend(ast.callee.name)
 			indend("(");
-			for (let j = 0; j < ast.arguments.length; j++) {
+			for (var j = 0; j < ast.arguments.length; j++) {
 				toString(ast.arguments[j])
 				if (j != ast.arguments.length - 1) {
 					indend(",")
 				}
 			}
 			indend(")");
+		} else if (ast.type === "BlockStatement") {
+			indend("{");
+			if (isWrapAt("{")) {
+				doWrap();
+			}
+			
+			toString(ast.body);
+			if (isWrapAt("}")) {
+				doWrap();
+			}
+			indend("}");
+		} else if (ast.type === "ReturnStatement") {
+			indend("return ");
+			toString(ast.argument);
+			//nextToken(ast.argument.range);
 		} else if (ast.type === "ExpressionStatement") {
 			toString(ast.expression);
 		} else if (ast.type === "Literal") {
-			if (ast.raw != null && !(ast.value == null && ast.raw == "null"))
-				indend(ast.raw)
-			else if (ast.value != null)
-				indend(ast.value)
-
+			if (ast.raw != null && !(ast.value == null && ast.raw == "null")){
+				indend(ast.raw);
+				nextToken(ast.range);
+			}else if (ast.value != null){
+				indend(ast.value);
+				nextToken(ast.range);
+			}
 		} else if (ast.type === "ImportDeclaration") {
 			indend("import ")
-			for (let j = 0; j < ast.specifiers.length; j++) {
+			for (var j = 0; j < ast.specifiers.length; j++) {
 				toString(ast.specifiers[j])
 				indend(".")
 			}
@@ -219,7 +276,7 @@ function toString(ast, nsp) {
 				queryScope.push(true);
 			}
 			{
-				let _pend = intendedFinalString[intendedFinalString.length - 1];
+				var _pend = intendedFinalString[intendedFinalString.length - 1];
 				if (_pend
 						&& _pend.indexOf(". ", _pend.length - ". ".length) !== -1) {
 					_pend = _pend.substr(0, _pend.length - 1);
@@ -227,18 +284,20 @@ function toString(ast, nsp) {
 				}
 			}
 			{
-				let _pend = intendedFinalString[intendedFinalString.length - 1];
+				var _pend = intendedFinalString[intendedFinalString.length - 1];
 				if (_pend
 						&& _pend.indexOf(" .", _pend.length - " .".length) !== -1) {
 					_pend = _pend.substr(0, _pend.length - 2) + ".";
 					intendedFinalString[intendedFinalString.length - 1] = _pend;
 				}
 			}
-			if (typeof nsp === "boolean" && nsp === true)
+			if(ast.name==="")
+				indend(getToken(ast.range))
+			else if (typeof nsp === "boolean" && nsp === true)
 				indend(ast.name)
 			else
 				indend(" " + ast.name + " ")
-
+			nextToken(ast.range);
 			if (isGutterKeyword(ast.name)) {
 				spaces = spaces + ast.name.length + 1;
 			}
@@ -267,7 +326,7 @@ function toString(ast, nsp) {
 			indend(".")
 			toString(ast.property, true)
 		} else if (ast.type === "SequenceExpression") {
-			for (let j = 0; j < ast.expressions.length; j++) {
+			for (var j = 0; j < ast.expressions.length; j++) {
 				toString(ast.expressions[j])
 				if (j != ast.expressions.length - 1) {
 					indend(",")
@@ -280,38 +339,40 @@ function toString(ast, nsp) {
 	}
 }
 
-function traverse(ast, emit) {
+function traverse(ast, prev, parent, emit) {
 	if (ast && ast.length) {
-		for (let i = 0; i < ast.length; i++) {
-			traverse(ast[i],emit);
+		for (var i = 0; i < ast.length; i++) {
+			traverse(ast[i],i>0?ast[i-1]:null,null,emit);
 		}
 	} else {
 		if (ast.type === "ExpressionStatement") {
-			traverse(ast.expression,emit);
+			traverse(ast.expression,prev,emit);
 			if(emit){
-				let _em = emit(ast.expression);
+				var _em = emit(ast.expression, prev, ast);
 				if(typeof _em === 'undefined')
 					console.log("WARNING: Emit did not return any value, ignoring")
 				else ast.expression = _em;
 			} 
 		} else if (ast.type === "CallExpression") {
-			let fFound = frFound(ast.callee.name);
-			mTemplate(ast, fFound,emit);
-			for (let j = 0; j < ast.arguments.length; j++) {
-				traverse(ast.arguments[j],emit)
+			var fFound = frFound(ast.callee.name);
+			mTemplate(ast, fFound, emit);
+			for (var j = 0; j < ast.arguments.length; j++) {
+				traverse(ast.arguments[j],j>0?ast.arguments[j-1]:null,ast,emit)
 			}
+		} else if (ast.type === "BlockStatement") {
+			traverse(ast.body,prev,ast,emit);
 		} else if (ast.type === "BinaryExpression") {
-			traverse(ast.left,emit);
-			traverse(ast.right,emit);
+			traverse(ast.left,prev,ast,emit);
+			traverse(ast.right,prev,ast,emit);
 		} else if (ast.type === "AssignmentExpression") {
-			traverse(ast.left,emit);
-			traverse(ast.right,emit);
+			traverse(ast.left,prev,ast,emit);
+			traverse(ast.right,prev,ast,emit);
 		} else if (ast.type === "MemberExpression") {
-			traverse(ast.object,emit);
-			traverse(ast.property,emit);
+			traverse(ast.object,prev,ast,emit);
+			traverse(ast.property,prev,ast,emit);
 		} else if (ast.type === "SequenceExpression") {
-			for (let j = 0; j < ast.expressions.length; j++) {
-				traverse(ast.expressions[j],emit)
+			for (var j = 0; j < ast.expressions.length; j++) {
+				traverse(ast.expressions[j],j>0?ast.expressions[j-1]:null,ast,emit)
 			}
 		}
 	}
@@ -334,8 +395,18 @@ var jsConnector = {
 		template = database.template;
 		datatypes = database.datatypes;
 		data = stripXML(data);
-		const ast = flow.parse(data);
-		full_obj = JSON.parse(JSON.stringify(ast)).body;
+		const ast = flow.parse(data,{type:true, 
+			tokens:true, 
+			esproposal_class_instance_fields: true, 
+			esproposal_class_static_fields:true, 
+			esproposal_decorators:true, 
+			esproposal_optional_chaining:true, 
+			types:true
+		});
+		full_parent_obj = JSON.parse(JSON.stringify(ast));
+		full_obj = full_parent_obj.body;
+		unranged_tokens = full_parent_obj.tokens;
+		rangeArangeTokens(full_parent_obj.tokens);
 		traverse(full_obj, function(emit_ast){
 			return javaConnector.emit(emit_ast);
 		});
@@ -432,28 +503,41 @@ if (typeof process === 'object') {
 			console.log("nodejs detected " + process.versions.node)
 			const fs = require("fs")
 			const flow = require("flow-parser")
-			fs.readFile('database.json', 'utf8' , (err1, data1) => {
+			fs.readFile('database.json', 'utf8' , function(err1, data1) {
 				if (err1) {
 					console.error(err1)
 					return
 				}
 				if(!process.argv[2]) throw Error("please provide source file")
 				
-				fs.readFile(process.argv[2], 'utf8' , (err, data) => {
+				fs.readFile(process.argv[2], 'utf8' , function(err, data) {
 					if (err) {
 						console.error(err)
 						return
 					}
-					
 					database = JSON.parse(data1);
 					template = database.template;
 					datatypes = database.datatypes;
-					const ast = flow.parse(data);
+					const ast = flow.parse(data,{type:true, 
+						tokens:true, 
+						esproposal_class_instance_fields: true, 
+						esproposal_class_static_fields:true, 
+						esproposal_decorators:true, 
+						esproposal_optional_chaining:true, 
+						types:true
+					});
 					//console.log(JSON.stringify(ast));
-					full_obj = JSON.parse(JSON.stringify(ast)).body;
+					full_parent_obj = JSON.parse(JSON.stringify(ast));
+					full_obj = full_parent_obj.body;
+					unranged_tokens = full_parent_obj.tokens;
+					rangeArangeTokens(full_parent_obj.tokens);
 					if(process.argv[3]){
 						const elis = require("./" + process.argv[3])
-						traverse(full_obj, elis.listener);
+						if(elis.start) elis.start(flow,full_obj)
+						traverse(full_obj, function(pAst){
+							return elis.listener(flow, pAst);
+						});
+						if(elis.end) elis.end(flow,full_obj)
 					}else{
 						traverse(full_obj);
 					}
