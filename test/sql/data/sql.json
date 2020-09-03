@@ -5,7 +5,8 @@
 		{"name":"+"},
 		{"name":"THEN"},
 		{"name":"CASE"},
-		{"name":","}
+		{"name":","},
+		{"name":"}"}
 	],
 "wrapAt":[
 		{"name":"FROM"},
@@ -20,6 +21,18 @@
 		{"name":"INT"},
 		{"name":"NUMERIC"},
 		{"name":"VARCHAR"}
+	],
+"keywords":
+	[
+		{"name":"SELECT"},
+		{"name":"INSERT"},
+		{"name":"UPDATE"},
+		{"name":"DELETE"},
+		{"name":"CREATE"},
+		{"name":"ALTER"},
+		{"name":"FROM"},
+		{"name":"WHERE"},
+		{"name":"AND"}
 	],
 "gutter_keywords":
 	[

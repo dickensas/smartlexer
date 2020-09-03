@@ -1,0 +1,1 @@
+SELECT * FROM dbo.employee e, department d, profile p WHERE d.deptid* = e.deptid AND p.empid = *e.empid

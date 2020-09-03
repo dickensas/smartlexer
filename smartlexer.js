@@ -15,12 +15,21 @@ var gutter = 0;
 var full_obj = {};
 var parsingXML = false;
 
-function isWrapBy(key) {
+function isWrapBy(key,range) {
 	if (!database.wrapBy)
 		return false;
 	for (var i = 0; i < database.wrapBy.length; i++) {
-		if (key.toLowerCase() === database.wrapBy[i].name.toLowerCase())
+		if (key.toLowerCase() === database.wrapBy[i].name.toLowerCase()){
+			/*if(range && range.length>1 && database.wrapBy[i].skipAt){
+				var prevTok = getToken(range,1).value;
+				console.log(range)
+				console.log("---" + prevTok);
+				if(database.wrapBy[i].skipAt.indexOf(prevTok)!=-1){
+					return false;
+				}
+			}*/
 			return true;
+		}
 	}
 	return false;
 }
@@ -29,7 +38,8 @@ function isWrapAt(key) {
 	if (!database.wrapAt)
 		return false;
 	for (var i = 0; i < database.wrapAt.length; i++) {
-		if (key.toLowerCase() === database.wrapAt[i].name.toLowerCase()){
+		//console.log(key);
+		if (key && key.toLowerCase() === database.wrapAt[i].name.toLowerCase()){
 			if(database.wrapAt[i].gutter==="+"){
 				gutter+=spaces;
 			}else if(database.wrapAt[i].gutter==="-"){
@@ -142,7 +152,8 @@ function isSP(sp, key) {
 	if (!database[sp])
 		return false;
 	for (var i = 0; i < database[sp].length; i++) {
-		if (database[sp][i].name.toLowerCase() == key.toLowerCase()) {
+		//console.log(database[sp][i].name.toLowerCase() === key.toLowerCase())
+		if (database[sp][i].name.toLowerCase() === key.toLowerCase()) {
 			return true;
 		}
 	}
@@ -160,6 +171,7 @@ function frFound(from) {
 }
 
 function isGutterKeyword(name) {
+	if(!database.gutter_keywords) return false;
 	for (var i = 0; i < database.gutter_keywords.length; i++) {
 		if (database.gutter_keywords[i].name.toLowerCase() === name
 				.toLowerCase()) {
@@ -180,7 +192,13 @@ function doWrap(left) {
 		intendedFinalString.push(" ".padStart(gutter, ' '));
 	}
 }
-
+function checkSpace(){
+	if(intendedFinalString[intendedFinalString.length - 1]){
+		var str = intendedFinalString[intendedFinalString.length - 1];
+		return str[str.length-1] === ' ';
+	}
+	return false;
+}
 function indend(finalString) {
 	if (intendedFinalString.length === 0) {
 		doWrap();
@@ -197,22 +215,68 @@ function indend(finalString) {
 			intendedFinalString[intendedFinalString.length - 1] = _pend;
 		}
 	}
+	{
+		var _pend = intendedFinalString[intendedFinalString.length - 1];
+		if (_pend && _pend[_pend.length - 1] == '.' && finalString[0] == ' ') {
+			finalString = finalString.substr(0, finalString.length - 1);
+		}
+	}
 	intendedFinalString[intendedFinalString.length - 1] = intendedFinalString[intendedFinalString.length - 1]
 			+ finalString;
 }
 
+function fakeIdentifier(token) {
+	return {
+		"type" : "Identifier",
+		"loc" : {
+			"source" : null,
+			"start" : {
+				"line" : -1,
+				"column" : -1
+			},
+			"end" : {
+				"line" : -1,
+				"column" : -1
+			}
+		},
+		"range" : token.range,
+		"name" : token.value,
+		"typeAnnotation" : null,
+		"optional" : false
+	};
+}
+
 function nextToken(range){
+	if(!ranged_tokens[range[0]]) return;
+	if(!ranged_tokens[range[0]][range[1]]) return;
 	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
-	var nextValue = unranged_tokens[rangeIndex+1].value;
-	if(nextValue===";"){
-		indend(";");
-		doWrap();
+	if(unranged_tokens[rangeIndex+1]){
+		var nextValue = unranged_tokens[rangeIndex+1].value;
+		if(nextValue===";" || nextValue==="}" || nextValue===":"){
+			toString(fakeIdentifier(unranged_tokens[rangeIndex+1]));
+		}
 	}
 }
 
-function getToken(range){
+function prevToken(range){
+	if(!ranged_tokens[range[0]]) return;
+	if(!ranged_tokens[range[0]][range[1]]) return;
 	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
-	return nextValue = unranged_tokens[rangeIndex].value;
+	if(unranged_tokens[rangeIndex-1]){
+		var prevValue = unranged_tokens[rangeIndex-1].value;
+		if(prevValue==="." || prevValue==="{"){
+			toString(fakeIdentifier(unranged_tokens[rangeIndex-1]));
+		}
+	}
+}
+
+function getToken(range,np){
+	if(!ranged_tokens[range[0]]) return "";
+	if(!ranged_tokens[range[0]][range[1]]) return "";
+	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
+	if(typeof np !== 'undefined' && np!=null && np>0)
+		rangeIndex += np;
+	return nextValue = unranged_tokens[rangeIndex];
 }
 
 function toString(ast, nsp) {
@@ -232,17 +296,44 @@ function toString(ast, nsp) {
 				}
 			}
 			indend(")");
-		} else if (ast.type === "BlockStatement") {
-			indend("{");
+		} //else if (ast.type === "EmptyStatement") { 
+			//nextToken(ast.range,-1);
+			//toString(fakeIdentifier(getToken(ast.range)));
+		//} 
+		else if (ast.type === "BlockStatement") {
+			/*indend("{");
 			if (isWrapAt("{")) {
 				doWrap();
-			}
+			}*/
+			
+			//prevToken(ast.range);
 			
 			toString(ast.body);
-			if (isWrapAt("}")) {
+			/*if (isWrapAt("}")) {
 				doWrap();
 			}
 			indend("}");
+			if (isWrapBy("}")) {
+				doWrap();
+			}*/
+		} else if(ast.type === "LabeledStatement"){
+			toString(ast.label);
+			toString(ast.body);
+		} else if(ast.type === "TypeAnnotation"){
+			toString(ast.typeAnnotation);
+		} else if(ast.type === "GenericTypeAnnotation"){
+			toString(ast.id);
+		} else if(ast.type === "ClassProperty"){
+			toString(ast.key);
+			if(ast.typeAnnotation!=null)
+			   toString(ast.typeAnnotation);
+		} else if(ast.type === "ClassBody"){
+			toString(ast.body);
+		} else if(ast.type === "ClassDeclaration"){
+			database.keywords.push({name:ast.id.name})
+			indend("class ");
+			toString(ast.id);
+			toString(ast.body);
 		} else if (ast.type === "ReturnStatement") {
 			indend("return ");
 			toString(ast.argument);
@@ -261,7 +352,7 @@ function toString(ast, nsp) {
 			indend("import ")
 			for (var j = 0; j < ast.specifiers.length; j++) {
 				toString(ast.specifiers[j])
-				indend(".")
+				//indend(".")
 			}
 
 		} else if (ast.type === "ImportDefaultSpecifier") {
@@ -291,39 +382,47 @@ function toString(ast, nsp) {
 					intendedFinalString[intendedFinalString.length - 1] = _pend;
 				}
 			}
+			
+			prevToken(ast.range)
 			if(ast.name==="")
-				indend(getToken(ast.range))
+				indend(getToken(ast.range).value)
 			else if (typeof nsp === "boolean" && nsp === true)
 				indend(ast.name)
 			else
-				indend(" " + ast.name + " ")
+				indend("" + ast.name + "")
+			if(isSP("keywords",ast.name)){
+				indend(" ");
+			}
+			if(!checkSpace() && getToken(ast.range,1).value!==".") indend(" ");
 			nextToken(ast.range);
 			if (isGutterKeyword(ast.name)) {
 				spaces = spaces + ast.name.length + 1;
 			}
-			if (isWrapBy(ast.name)) {
+			if (isWrapBy(ast.name, ast.range)) {
 				doWrap()
 			}
+		} else if (ast.type === "UpdateExpression") {
+			toString(ast.argument);
+			indend(ast.operator)
 		} else if (ast.type === "BinaryExpression") {
 			toString(ast.left)
 			indend(ast.operator)
-			if (isWrapBy(ast.operator)) {
+			if (isWrapBy(ast.operator, ast.range)) {
 				doWrap()
 			}
 			toString(ast.right)
 		} else if (ast.type === "AssignmentExpression") {
 			if (ansiAlias && !foundFrom) {
 				toString(ast.right)
-				indend(" ")
 				toString(ast.left)
 			} else {
 				toString(ast.left)
-				indend(ast.operator + " ")
+				indend(ast.operator)
 				toString(ast.right)
 			}
 		} else if (ast.type === "MemberExpression") {
-			toString(ast.object)
-			indend(".")
+			toString(ast.object, true)
+			//indend(".")
 			toString(ast.property, true)
 		} else if (ast.type === "SequenceExpression") {
 			for (var j = 0; j < ast.expressions.length; j++) {
@@ -346,7 +445,7 @@ function traverse(ast, prev, parent, emit) {
 		}
 	} else {
 		if (ast.type === "ExpressionStatement") {
-			traverse(ast.expression,prev,emit);
+			traverse(ast.expression,prev,ast,emit);
 			if(emit){
 				var _em = emit(ast.expression, prev, ast);
 				if(typeof _em === 'undefined')
@@ -364,6 +463,8 @@ function traverse(ast, prev, parent, emit) {
 		} else if (ast.type === "BinaryExpression") {
 			traverse(ast.left,prev,ast,emit);
 			traverse(ast.right,prev,ast,emit);
+		} else if (ast.type === "UpdateExpression") {
+			traverse(ast.argument,prev,ast,emit);
 		} else if (ast.type === "AssignmentExpression") {
 			traverse(ast.left,prev,ast,emit);
 			traverse(ast.right,prev,ast,emit);
@@ -384,7 +485,7 @@ var jsConnector = {
 	},
 	setJSON : function(name, json) {
 		try {
-			console.log(name)
+			//console.log(name)
 			window[name] = JSON.parse(json);
 		} catch (e) {
 			console.log(e)
@@ -496,55 +597,65 @@ function unstripXML(joinedStr) {
 	// console.log(joinedStr);
 	return joinedStr;
 }
-
-if (typeof process === 'object') {
-	if (typeof process.versions === 'object') {
-		if (typeof process.versions.node !== 'undefined') {
-			console.log("nodejs detected " + process.versions.node)
-			const fs = require("fs")
-			const flow = require("flow-parser")
-			fs.readFile('database.json', 'utf8' , function(err1, data1) {
-				if (err1) {
-					console.error(err1)
-					return
-				}
-				if(!process.argv[2]) throw Error("please provide source file")
-				
-				fs.readFile(process.argv[2], 'utf8' , function(err, data) {
-					if (err) {
-						console.error(err)
-						return
+var parse = function(argdatabase, argsource, arglistener){
+	console.log("parser starting");
+	const fs = require("fs")
+	const flow = require("flow-parser")
+	database = JSON.parse(argdatabase);
+	template = database.template;
+	datatypes = database.datatypes;
+	const ast = flow.parse(argsource,{type:true, 
+		tokens:true, 
+		esproposal_class_instance_fields: true, 
+		esproposal_class_static_fields:true, 
+		esproposal_decorators:true, 
+		esproposal_optional_chaining:true, 
+		types:true
+	});
+	//console.log(JSON.stringify(ast));
+	full_parent_obj = JSON.parse(JSON.stringify(ast));
+	full_obj = full_parent_obj.body;
+	unranged_tokens = full_parent_obj.tokens;
+	rangeArangeTokens(full_parent_obj.tokens);
+	if(arglistener){
+		const elis = require("./" + arglistener);
+		if(elis.start) elis.start(flow,full_obj)
+		traverse(full_obj, null, null, function(pAstE, pPrev, pAst){
+			return elis.listener(flow, pAstE, pPrev, pAst);
+		});
+		if(elis.end) elis.end(flow,full_obj)
+	}else{
+		traverse(full_obj);
+	}
+	toString(full_obj);
+	return intendedFinalString.join("\n");
+};
+module.exports.parse = parse;
+if(!(typeof global.it === 'function')){
+	if (typeof process === 'object') {
+		if (typeof process.versions === 'object') {
+			if (typeof process.versions.node !== 'undefined') {
+				console.log("nodejs detected " + process.versions.node)
+				const fs = require("fs")
+				const databaseJson = process.argv[4]?process.argv[4]:'database.json';
+				fs.readFile(databaseJson, 'utf8' , function(err1, data1) {
+					if (err1) {
+						console.error(err1);
+						return;
 					}
-					database = JSON.parse(data1);
-					template = database.template;
-					datatypes = database.datatypes;
-					const ast = flow.parse(data,{type:true, 
-						tokens:true, 
-						esproposal_class_instance_fields: true, 
-						esproposal_class_static_fields:true, 
-						esproposal_decorators:true, 
-						esproposal_optional_chaining:true, 
-						types:true
+					if(!process.argv[2]) throw Error("please provide source file")
+					
+					fs.readFile(process.argv[2], 'utf8' , function(err, data) {
+						if (err) {
+							console.error(err);
+							return;
+						}
+						var strP = parse(data1, data);
+						console.log(strP);
 					});
-					//console.log(JSON.stringify(ast));
-					full_parent_obj = JSON.parse(JSON.stringify(ast));
-					full_obj = full_parent_obj.body;
-					unranged_tokens = full_parent_obj.tokens;
-					rangeArangeTokens(full_parent_obj.tokens);
-					if(process.argv[3]){
-						const elis = require("./" + process.argv[3])
-						if(elis.start) elis.start(flow,full_obj)
-						traverse(full_obj, function(pAst){
-							return elis.listener(flow, pAst);
-						});
-						if(elis.end) elis.end(flow,full_obj)
-					}else{
-						traverse(full_obj);
-					}
-					toString(full_obj);
-					console.log(intendedFinalString.join("\n"))
 				});
-			});
+			}
 		}
 	}
 }
+
