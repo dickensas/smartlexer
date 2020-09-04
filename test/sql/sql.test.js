@@ -15,6 +15,7 @@ describe('SQL', function () {
 				}
 				var smartlexer = require('../../smartlexer.js');
 		    	var strSql = smartlexer.parse(data1, data);
+		    	console.log(strSql)
 		    	assert.equal(strSql.indexOf("WHERE d.deptid")!=-1, true);
 		    	
 			});

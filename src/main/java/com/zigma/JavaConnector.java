@@ -29,8 +29,7 @@ public class JavaConnector {
         button.setVisible(true);
         InputStream fis = null;
         try {
-        	fis = new FileInputStream(new File("./database.json"));
-        	String database = new String(fis.readAllBytes(), "UTF-8");
+        	String database = new String("{}".getBytes(), "UTF-8");
 			javascriptConnector.call("setJSON", "database", database);
 		} catch (Exception e) {
 			e.printStackTrace();

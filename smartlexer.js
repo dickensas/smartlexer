@@ -1,5 +1,4 @@
 var database={};
-var template={};
 var unranged_tokens = [];
 var ranged_tokens = [];
 
@@ -20,14 +19,11 @@ function isWrapBy(key,range) {
 		return false;
 	for (var i = 0; i < database.wrapBy.length; i++) {
 		if (key.toLowerCase() === database.wrapBy[i].name.toLowerCase()){
-			/*if(range && range.length>1 && database.wrapBy[i].skipAt){
-				var prevTok = getToken(range,1).value;
-				console.log(range)
-				console.log("---" + prevTok);
-				if(database.wrapBy[i].skipAt.indexOf(prevTok)!=-1){
-					return false;
-				}
-			}*/
+			if(database.wrapBy[i].gutter==="+"){
+				gutter+=spaces;
+			}else if(database.wrapBy[i].gutter==="-"){
+				gutter-=spaces;
+			}
 			return true;
 		}
 	}
@@ -161,6 +157,7 @@ function isSP(sp, key) {
 }
 
 function frFound(from) {
+	if(!database.template) return [];
 	var templates = [];
 	for (var i = 0; i < database.template.length; i++) {
 		if (database.template[i].fr.name === from) {
@@ -239,33 +236,33 @@ function fakeIdentifier(token) {
 				"column" : -1
 			}
 		},
-		"range" : token.range,
-		"name" : token.value,
+		"range" : typeof token === "string"? [-1, -1]:token.range,
+		"name" : typeof token === "string"? token: token.value,
 		"typeAnnotation" : null,
 		"optional" : false
 	};
 }
 
-function nextToken(range){
+function nextToken(range,ctx){
 	if(!ranged_tokens[range[0]]) return;
 	if(!ranged_tokens[range[0]][range[1]]) return;
 	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
 	if(unranged_tokens[rangeIndex+1]){
 		var nextValue = unranged_tokens[rangeIndex+1].value;
-		if(nextValue===";" || nextValue==="}" || nextValue===":"){
-			toString(fakeIdentifier(unranged_tokens[rangeIndex+1]));
+		if(nextValue===";" || nextValue==="}" || nextValue===":" || nextValue==="]" || nextValue===")"){
+			toString(fakeIdentifier(unranged_tokens[rangeIndex+1]),ctx);
 		}
 	}
 }
 
-function prevToken(range){
+function prevToken(range,ctx){
 	if(!ranged_tokens[range[0]]) return;
 	if(!ranged_tokens[range[0]][range[1]]) return;
 	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
 	if(unranged_tokens[rangeIndex-1]){
 		var prevValue = unranged_tokens[rangeIndex-1].value;
-		if(prevValue==="." || prevValue==="{"){
-			toString(fakeIdentifier(unranged_tokens[rangeIndex-1]));
+		if(prevValue==="." || prevValue==="{" || prevValue==="[" || prevValue==="("){
+			toString(fakeIdentifier(unranged_tokens[rangeIndex-1]),ctx);
 		}
 	}
 }
@@ -274,15 +271,25 @@ function getToken(range,np){
 	if(!ranged_tokens[range[0]]) return "";
 	if(!ranged_tokens[range[0]][range[1]]) return "";
 	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
-	if(typeof np !== 'undefined' && np!=null && np>0)
+	if(typeof np !== 'undefined' && np!=null && np!=0)
 		rangeIndex += np;
 	return nextValue = unranged_tokens[rangeIndex];
 }
 
-function toString(ast, nsp) {
+function isOneOf(arr, name){
+	if(!arr) return false;
+	for(var i=0;i<arr.length;i++){
+		if(arr[i].name.toLowerCase()===name.toLowerCase()){
+			return true;
+		}
+	}
+	return false;
+}
+
+function toString(ast, ctx) {
 	if (ast.length) {
 		for (var i = 0; i < ast.length; i++) {
-			toString(ast[i]);
+			toString(ast[i],ctx);
 		}
 	} else {
 		
@@ -290,73 +297,63 @@ function toString(ast, nsp) {
 			indend(ast.callee.name)
 			indend("(");
 			for (var j = 0; j < ast.arguments.length; j++) {
-				toString(ast.arguments[j])
+				toString(ast.arguments[j],ctx)
 				if (j != ast.arguments.length - 1) {
 					indend(",")
 				}
 			}
 			indend(")");
-		} //else if (ast.type === "EmptyStatement") { 
-			//nextToken(ast.range,-1);
-			//toString(fakeIdentifier(getToken(ast.range)));
-		//} 
-		else if (ast.type === "BlockStatement") {
-			/*indend("{");
-			if (isWrapAt("{")) {
-				doWrap();
-			}*/
-			
-			//prevToken(ast.range);
-			
-			toString(ast.body);
-			/*if (isWrapAt("}")) {
-				doWrap();
-			}
-			indend("}");
-			if (isWrapBy("}")) {
-				doWrap();
-			}*/
+		} else if(ast.type === "ForStatement"){
+			var _for = fakeIdentifier("for");
+			toString(_for,_for);
+			toString(ast.init,_for);
+			toString(ast.test,_for);
+			toString(ast.update,_for);
+			toString(ast.body,null);
+		} else if(ast.type === "BlockStatement") {
+			toString(ast.body,ctx);
 		} else if(ast.type === "LabeledStatement"){
-			toString(ast.label);
-			toString(ast.body);
+			toString(ast.label,ctx);
+			toString(ast.body,ctx);
 		} else if(ast.type === "TypeAnnotation"){
 			toString(ast.typeAnnotation);
 		} else if(ast.type === "GenericTypeAnnotation"){
-			toString(ast.id);
+			toString(ast.id,ctx);
 		} else if(ast.type === "ClassProperty"){
-			toString(ast.key);
+			toString(ast.key,ctx);
 			if(ast.typeAnnotation!=null)
-			   toString(ast.typeAnnotation);
+			   toString(ast.typeAnnotation,ctx);
 		} else if(ast.type === "ClassBody"){
-			toString(ast.body);
+			toString(ast.body,ctx);
 		} else if(ast.type === "ClassDeclaration"){
 			database.keywords.push({name:ast.id.name})
 			indend("class ");
-			toString(ast.id);
-			toString(ast.body);
+			toString(ast.id,ctx);
+			toString(ast.body,ctx);
 		} else if (ast.type === "ReturnStatement") {
 			indend("return ");
-			toString(ast.argument);
-			//nextToken(ast.argument.range);
+			toString(ast.argument,ctx);
 		} else if (ast.type === "ExpressionStatement") {
-			toString(ast.expression);
+			toString(ast.expression,ctx);
 		} else if (ast.type === "Literal") {
 			if (ast.raw != null && !(ast.value == null && ast.raw == "null")){
+				prevToken(ast.range,ctx);
 				indend(ast.raw);
-				nextToken(ast.range);
+				nextToken(ast.range,ctx);
 			}else if (ast.value != null){
+				prevToken(ast.range,ctx);
 				indend(ast.value);
-				nextToken(ast.range);
+				nextToken(ast.range,ctx);
 			}
 		} else if (ast.type === "ImportDeclaration") {
 			indend("import ")
 			for (var j = 0; j < ast.specifiers.length; j++) {
-				toString(ast.specifiers[j])
+				toString(ast.specifiers[j],ctx)
 				//indend(".")
 			}
 
 		} else if (ast.type === "ImportDefaultSpecifier") {
-			toString(ast.local)
+			toString(ast.local,ctx)
 		}
 		else if (ast.type === "Identifier") {
 			if (isWrapAt(ast.name)) {
@@ -383,50 +380,67 @@ function toString(ast, nsp) {
 				}
 			}
 			
-			prevToken(ast.range)
+			prevToken(ast.range,ctx)
 			if(ast.name==="")
 				indend(getToken(ast.range).value)
-			else if (typeof nsp === "boolean" && nsp === true)
-				indend(ast.name)
 			else
-				indend("" + ast.name + "")
+				indend(ast.name)
 			if(isSP("keywords",ast.name)){
 				indend(" ");
 			}
-			if(!checkSpace() && getToken(ast.range,1).value!==".") indend(" ");
-			nextToken(ast.range);
+			if(!checkSpace() && database.noSpace){
+				if(database.noSpace.indexOf(getToken(ast.range,1).value)!=-1){
+					indend(" ");
+				}	
+			}else if(!checkSpace()){
+				indend(" ");
+			}
+			nextToken(ast.range,ctx);
 			if (isGutterKeyword(ast.name)) {
-				spaces = spaces + ast.name.length + 1;
+				gutter = gutter + ast.name.length + 1;
 			}
 			if (isWrapBy(ast.name, ast.range)) {
-				doWrap()
+				if(typeof database.noWrapContext === "undefined" || database.noWrapContext === null)
+					doWrap()
+				else if(typeof ctx !== "undefined" && ctx!==null && isOneOf(database.noWrapContext,ctx.name)){
+					//don't wrap
+				}else
+					doWrap()
 			}
 		} else if (ast.type === "UpdateExpression") {
-			toString(ast.argument);
-			indend(ast.operator)
+			if(ast.prefix === true){
+				indend(ast.operator)
+				toString(ast.argument,ctx)
+			}else{
+				toString(ast.argument,ctx)
+				indend(ast.operator)
+			}
 		} else if (ast.type === "BinaryExpression") {
-			toString(ast.left)
+			toString(ast.left,ctx)
 			indend(ast.operator)
 			if (isWrapBy(ast.operator, ast.range)) {
 				doWrap()
 			}
-			toString(ast.right)
+			toString(ast.right,ctx)
 		} else if (ast.type === "AssignmentExpression") {
-			if (ansiAlias && !foundFrom) {
-				toString(ast.right)
-				toString(ast.left)
-			} else {
-				toString(ast.left)
+			//if (ansiAlias && !foundFrom) {
+				//toString(ast.right,ctx)
+				//toString(ast.left,ctx)
+			//} else {
+				if(ast.left.value===null && ast.left.type=="Literal" && getToken(ast.left.range).value===ast.operator){
+					toString(fakeIdentifier(getToken(ast.left.range,-1)),ctx)
+				}else{
+					toString(ast.left,ctx)
+				}
 				indend(ast.operator)
-				toString(ast.right)
-			}
+				toString(ast.right,ctx)
+			//}
 		} else if (ast.type === "MemberExpression") {
-			toString(ast.object, true)
-			//indend(".")
-			toString(ast.property, true)
+			toString(ast.object,ctx)
+			toString(ast.property,ctx)
 		} else if (ast.type === "SequenceExpression") {
 			for (var j = 0; j < ast.expressions.length; j++) {
-				toString(ast.expressions[j])
+				toString(ast.expressions[j],ctx)
 				if (j != ast.expressions.length - 1) {
 					indend(",")
 					if (isWrapBy(",")) {
@@ -434,6 +448,17 @@ function toString(ast, nsp) {
 					}
 				}
 			}
+		} else if(ast.range && !ast.name && ast.type && ast.range!="EmptyStatement"){
+			/*if(getToken(ast.range)){
+				toString(fakeIdentifier(getToken(ast.range)));
+			}*/
+		} else {
+			/*for(var _p in ast){
+				console.log(ast[_p])
+				if(ast[_p] && ast[_p].range && ast[_p].type){
+					toString(ast[_p])
+				}
+			}*/
 		}
 	}
 }
@@ -475,6 +500,14 @@ function traverse(ast, prev, parent, emit) {
 			for (var j = 0; j < ast.expressions.length; j++) {
 				traverse(ast.expressions[j],j>0?ast.expressions[j-1]:null,ast,emit)
 			}
+		} else {
+			var _pP = null;
+			for(var _p in ast){
+				if(ast[_p] && ast[_p].range && ast[_p].type){
+					traverse(ast[_p],_pP!=null?ast[_pP]:null,ast,emit)
+				}
+				_pP = _p
+			}
 		}
 	}
 }
@@ -493,8 +526,6 @@ var jsConnector = {
 	},
 	parseToLex : function(data) {
 		database = window["database"];
-		template = database.template;
-		datatypes = database.datatypes;
 		data = stripXML(data);
 		const ast = flow.parse(data,{type:true, 
 			tokens:true, 
@@ -508,11 +539,11 @@ var jsConnector = {
 		full_obj = full_parent_obj.body;
 		unranged_tokens = full_parent_obj.tokens;
 		rangeArangeTokens(full_parent_obj.tokens);
-		traverse(full_obj, function(emit_ast){
+		traverse(full_obj, null, null, function(emit_ast){
 			return javaConnector.emit(emit_ast);
 		});
 		toString(full_obj);
-		javaConnector.showLex(unstripXML(intendedFinalString.join("\n")));
+		javaConnector.showLex(unstripXML(intendedFinalString.join("\r\n")));
 	}
 };
 
@@ -602,8 +633,6 @@ var parse = function(argdatabase, argsource, arglistener){
 	const fs = require("fs")
 	const flow = require("flow-parser")
 	database = JSON.parse(argdatabase);
-	template = database.template;
-	datatypes = database.datatypes;
 	const ast = flow.parse(argsource,{type:true, 
 		tokens:true, 
 		esproposal_class_instance_fields: true, 

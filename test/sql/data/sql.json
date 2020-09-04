@@ -1,6 +1,11 @@
 {
 "max": 200,
 "spaces": 3,
+"noSpace": [
+	{"name":"."},
+	{"name":"["},
+	{"name":"]"}
+],
 "wrapBy":[
 		{"name":"+"},
 		{"name":"THEN"},

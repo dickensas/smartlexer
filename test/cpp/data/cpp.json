@@ -1,12 +1,19 @@
 {
 "max": 200,
 "spaces": 3,
+"noWrapContext":[
+	{"name":"for"}
+],
+"noSpace": [
+	{"name":"."},
+	{"name":"["},
+	{"name":"]"}
+],
 "wrapBy":[
-		{"name":"+"},
 		{"name":"THEN"},
 		{"name":"CASE"},
 		{"name":","},
-		{"name":"}","skipAt":[";"]},
+		{"name":"}","skipAt":[";"], "gutter":"-"},
 		{"name":"{"},
 		{"name":";"},
 		{"name":":"}
@@ -17,7 +24,7 @@
 		{"name":"AND"},
 		{"name":"using"},
 		{"name":"{", "gutter":"+"},
-		{"name":"}", "gutter":"-"}
+		{"name":"}"}
 	],
 "keywords":[
 	{"name":"alignas"},
