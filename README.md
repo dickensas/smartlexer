@@ -5,16 +5,18 @@ The primary objective of this utility is to transform parameters and rename func
 
 ## Mandatory dependencies
 
-### 1.) Flow Parser
+### Flow Parser
 This application uses flow-parser, use the below command to install flow-parser
 
 ```
 npm install flow-parser --save`
 ```
 
-### 2.) JavaFX
-Download JavaFX from 
-[JavaFX SDK](https://gluonhq.com/products/javafx/)<br/>
+## Optional dependencies
+
+### JavaFX
+Only required for running in GUI<br/>
+Download JavaFX from [JavaFX SDK](https://gluonhq.com/products/javafx/)<br/>
 Change the `build.gradle.kts` accordingly
 
 `"--module-path=C:\\MyFiles\\javafx-sdk-11.0.2\\lib"`
@@ -48,8 +50,16 @@ Currently experimenting with a complicated JSON structure like a database
             }
         }
     ]
+Template syntax reference
 
-This file should be named as "database.json" and put in the root folder
+| Abbreviation  | Expansion           | Example  |
+| ------------- |:-------------:| -----:|
+| I      | Identifier | "args":["1:I"] |
+| L      | Literal      |   "args"["1:L"] |
+| CE | CallExpression      |   "args":["1:CE"] |
+| BE | BinaryExpression      |   "args":["1:BE"] |
+
+This file should be named as "database.json" and put in the root folder or passed as a 3rd parameter
 
 ## Example Output
 &#10240;  <!-- Hack to add whitespace -->
