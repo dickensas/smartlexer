@@ -50,7 +50,7 @@ describe('PEG.js Grammer', function () {
 
 		const grammer = mustache.render(template, jsonData, partials);
 		//const grammer = fs.readFileSync('test/pegjs/data/java.pegjs', 'utf8');
-		console.log(grammer);
+		//console.log(grammer);
 		var parser = pegjs.generate(grammer);
 		
 		const sourceCode = fs.readFileSync("test/pegjs/src/test1.java", "utf8");
