@@ -1,0 +1,16 @@
+{{name}}
+  {{#combination}}
+  {{#first}}
+  =
+  {{/first}}
+  {{^first}}
+  /
+  {{/first}}
+  id:Identifier? __ declarations:VariableDeclarationList EOS {
+      return {
+        type: "VariableDeclaration",
+        declarations: declarations,
+        kind: id
+      };
+    }
+  {{/combination}}

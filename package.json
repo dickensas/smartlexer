@@ -27,7 +27,9 @@
   },
   "homepage": "http://dickens.co.in/smart-lexer",
   "dependencies": {
-    "flow-parser": "^0.132.0"
+    "flow-parser": "^0.132.0",
+    "mustache": "^4.0.1",
+    "pegjs": "^0.10.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",

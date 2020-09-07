@@ -207,14 +207,14 @@ function indend(finalString) {
 
 	{
 		var _pend = intendedFinalString[intendedFinalString.length - 1];
-		if (_pend && _pend[_pend.length - 1] == ' ' && finalString[0] == ' ') {
+		if (_pend && _pend[_pend.length - 1] == ' ' && finalString && finalString[0] == ' ') {
 			_pend = _pend.substr(0, _pend.length - 1);
 			intendedFinalString[intendedFinalString.length - 1] = _pend;
 		}
 	}
 	{
 		var _pend = intendedFinalString[intendedFinalString.length - 1];
-		if (_pend && _pend[_pend.length - 1] == '.' && finalString[0] == ' ') {
+		if (_pend && _pend[_pend.length - 1] == '.' && finalString && finalString[0] == ' ') {
 			finalString = finalString.substr(0, finalString.length - 1);
 		}
 	}
@@ -236,6 +236,7 @@ function fakeIdentifier(token) {
 				"column" : -1
 			}
 		},
+		"fake" : true,
 		"range" : typeof token === "string"? [-1, -1]:token.range,
 		"name" : typeof token === "string"? token: token.value,
 		"typeAnnotation" : null,
@@ -261,7 +262,7 @@ function prevToken(range,ctx){
 	var rangeIndex = ranged_tokens[range[0]][range[1]].rangeIndex;
 	if(unranged_tokens[rangeIndex-1]){
 		var prevValue = unranged_tokens[rangeIndex-1].value;
-		if(prevValue==="." || prevValue==="{" || prevValue==="[" || prevValue==="("){
+		if(prevValue==="." || prevValue==="{" || prevValue==="[" || prevValue==="(" || prevValue==="@"){
 			toString(fakeIdentifier(unranged_tokens[rangeIndex-1]),ctx);
 		}
 	}
@@ -310,6 +311,15 @@ function toString(ast, ctx) {
 			toString(ast.test,_for);
 			toString(ast.update,_for);
 			toString(ast.body,null);
+		} else if(ast.type === "FunctionExpression"){
+			toString(ast.params,ctx);
+			toString(ast.body,ctx);
+		} else if(ast.type === "Decorator"){
+			toString(ast.expression,ctx);
+		} else if(ast.type === "MethodDefinition"){
+			toString(ast.key,ctx);
+			toString(ast.decorators,ctx);
+			toString(ast.value,ctx);
 		} else if(ast.type === "BlockStatement") {
 			toString(ast.body,ctx);
 		} else if(ast.type === "LabeledStatement"){
@@ -326,7 +336,7 @@ function toString(ast, ctx) {
 		} else if(ast.type === "ClassBody"){
 			toString(ast.body,ctx);
 		} else if(ast.type === "ClassDeclaration"){
-			database.keywords.push({name:ast.id.name})
+			database.keywords && database.keywords.push({name:ast.id.name})
 			indend("class ");
 			toString(ast.id,ctx);
 			toString(ast.body,ctx);
@@ -354,8 +364,10 @@ function toString(ast, ctx) {
 
 		} else if (ast.type === "ImportDefaultSpecifier") {
 			toString(ast.local,ctx)
-		}
-		else if (ast.type === "Identifier") {
+		} else if (ast.type === "ThisExpression") {
+			toString(fakeIdentifier(getToken(ast.range)),ctx)
+		} else if (ast.type === "Identifier") {
+			if(ast.prefixAttribute) toString(ast.prefixAttribute,ctx)
 			if (isWrapAt(ast.name)) {
 				doWrap(gutter - (ast.name.length + 1))
 			}
@@ -395,6 +407,7 @@ function toString(ast, ctx) {
 			}else if(!checkSpace()){
 				indend(" ");
 			}
+			//if(ast.fake!==true)
 			nextToken(ast.range,ctx);
 			if (isGutterKeyword(ast.name)) {
 				gutter = gutter + ast.name.length + 1;
@@ -463,6 +476,201 @@ function toString(ast, ctx) {
 	}
 }
 
+var addedTokens = [];
+var symbols = [";",",","{","}","[","]","\\","/","|","@","#","$","%","^","&","*","(",")","-",".","?",">","<","`","~","!"];
+function findPrefixMissingToken(r) {
+	var missings = [];
+	if(addedTokens.length>2){
+		var rIndex = getToken(r).rangeIndex;
+		tokenLoop:
+		for(var k=rIndex;k>rIndex-2;k--){
+			var psToken = unranged_tokens[k];
+			if(symbols.indexOf(psToken.value)!=-1) continue
+			for(var j=addedTokens.length;j>addedTokens.length-2;j--){
+				if(addedTokens[j]){
+					var v = getToken(addedTokens[j]);
+					if(!(addedTokens[j][0]===psToken.range[0] && addedTokens[j][1]===psToken.range[1])){
+						//console.log("Missing parent token: " + psoToken.value)
+						missings.push({"token": psToken});
+						break tokenLoop;
+					}
+				}
+			}
+		}
+	}
+	return missings;
+}
+function isExists(r, arg_parent){
+	if(arg_parent!=null && arg_parent.constructor === Array){
+		for(var i=0;i<arg_parent.length;i++){
+			if(arg_parent[i].type && arg_parent[i].range){
+				isExists(r,arg_parent[i])
+			}
+		}
+	}else if(arg_parent!=null && (arg_parent.type==="Identifier" || arg_parent.type==="Literal")){
+		if(r[0]===arg_parent.range[0] && r[1]===arg_parent.range[1]){
+			return true;
+		}
+	}else if(arg_parent!=null && arg_parent.type && arg_parent.range){
+		for(var prop in arg_parent){
+			if(arg_parent[prop].type && arg_parent[prop].range){
+				isExists(r,arg_parent[prop])
+			}
+		}
+	}
+	return false;
+}
+function findSuffixMissingToken(r, arg_parent) {
+	var missings = [];
+	if(addedTokens.length>2){
+		var rIndex = getToken(r).rangeIndex;
+		tokenLoop:
+		for(var k=rIndex;k<rIndex+2;k++){
+			var nxToken = unranged_tokens[k];
+			if(symbols.indexOf(nxToken.value)!=-1) continue
+			if(!isExists(nxToken.range, arg_parent)){
+				console.log("Found missing token " + nxToken.value)
+				missings.push({"token":nxToken});
+				break tokenLoop;
+			}
+		}
+	}
+	return missings;
+}
+function addSuffixMissing(missings, arg_parent, arg_prop, inc){
+	console.log("a1")
+	if(typeof arg_prop !== "undefined" && typeof inc !== "undefined" && typeof arg_parent !== "undefined") {
+		var arr_prop = arg_parent[arg_prop];
+		console.log("a2")
+		if(missings && missings.length>0 && arr_prop && arr_prop!=null && arr_prop.constructor === Array){
+			var copy_arr_prop = [];
+			console.log("a3")
+			for(var j=0;j<arr_prop.length;j++){
+				copy_arr_prop.push(arr_prop[j])
+			}
+			console.log("a4")
+			copy_arr_prop.push({
+				"type" : "Identifier",
+				"loc" : missings[0].token.loc,
+				"range" : missings[0].token.range,
+				"name" : missings[0].token.value,
+				"typeAnnotation" : null,
+				"optional" : false
+			});
+			console.log("a5")
+			console.log("added suffix missing")
+			arg_parent[arg_prop] = copy_arr_prop;
+		}
+	}
+}
+
+function addPrefixMissing(missings, arg_parent, arg_prop, inc){
+	if(typeof arg_prop !== "undefined" && typeof inc !== "undefined" && typeof arg_parent !== "undefined") {
+		var arr_prop = arg_parent[arg_prop];
+		if(missings && missings.length>0 && arr_prop && arr_prop!=null && arr_prop.constructor === Array){
+			var copy_arr_prop = [];
+			for(var j=0;j<arr_prop.length;j++){
+				/*if(j===inc) copy_arr_prop.push({
+					"type" : "Identifier",
+					"loc" : missings[0].token.loc,
+					"range" : missings[0].token.range,
+					"name" : missings[0].token.value,
+					"typeAnnotation" : null,
+					"optional" : false
+				})*/
+				if(j==inc){
+					arr_prop[j].prefixAttribute = {
+						"type" : "Identifier",
+						"loc" : missings[0].token.loc,
+						"range" : missings[0].token.range,
+						"name" : missings[0].token.value,
+						"typeAnnotation" : null,
+						"optional" : false
+					}
+				}
+				copy_arr_prop.push(arr_prop[j])
+			}
+			arg_parent[arg_prop] = copy_arr_prop;
+		}
+	}
+}
+function fixMissingTokens(full_obj, arg_parent, arg_prop, inc) {
+	if (full_obj!=null && full_obj.constructor === Array) {
+		for (var i = 0; i < full_obj.length; i++) {
+			//console.log(i + " " + full_obj[i].type + " " + full_obj[i].name + " " + full_obj[i].value)
+			fixMissingTokens(full_obj[i], arg_parent, arg_prop, i)
+		}
+		var missings = findSuffixMissingToken(full_obj[full_obj.length-1].range, full_obj[full_obj.length-1]);
+		console.log(missings)
+		addSuffixMissing(missings, arg_parent, arg_prop, full_obj.length-1);
+	} else {
+		if(full_obj!=null){
+			if(full_obj.type==="Identifier" || full_obj.type==="Literal"){
+				var r = full_obj.range
+				addedTokens.push(r);
+				//if(full_obj.name == "gear" || full_obj.value=="gear"){
+					var missings = findPrefixMissingToken(r);
+					if(missings.length>0){
+						addedTokens.push(missings[0].token.range);
+						//if(arg_prop) console.log("property is: " + arg_prop)
+						//console.log("Gear .......");
+						addPrefixMissing(missings, arg_parent, arg_prop, inc)
+						//console.log(full_obj);
+					}
+				//}
+			}else{
+				for(var prop in full_obj){
+					/*if(full_obj[prop]!=null && full_obj[prop].length)
+						fixMissingTokens(full_obj[prop])
+					else if(full_obj[prop]!=null && full_obj[prop].range && full_obj[prop].type && full_obj[prop].type!=="Identifier"  && full_obj[prop].type!=="Literal"){
+						console.log(full_obj[prop].range)
+						fixMissingTokens(full_obj[prop])
+					}
+					else*/ 
+					if(full_obj[prop]!=null && full_obj[prop].constructor === Array && full_obj[prop].length>0 && full_obj[prop][0].type){
+						//console.log(prop + " is an array")
+						fixMissingTokens(full_obj[prop], full_obj, prop)
+					}else if(full_obj[prop]!=null && full_obj[prop].range && full_obj[prop].type && (full_obj[prop].type==="Identifier" || full_obj[prop].type==="Literal")){
+						//console.log(full_obj[prop].range)
+						var r = full_obj[prop].range
+						addedTokens.push(r);
+						
+						/*if(full_obj[prop].name == "gear" || full_obj[prop].value=="gear"){
+							console.log(full_obj[prop]);
+							reverseToken(r)
+						}*/
+						
+						//if(full_obj[prop].type==="Identifier" || full_obj[prop].type==="Literal"){
+							//console.log(full_obj[prop]);
+						//}
+						
+						/*var tok = getToken(currRange);
+						var tok1 = getToken(prevRange);
+						
+						var x = tok.rangeIndex;
+						var y = tok1.rangeIndex;
+						
+						if(x && y){
+							for(var j=x;j<=y;j++){
+								console.log(unranged_tokens[j])
+							}
+							process.exit(0)
+						}*/
+					}else if(full_obj[prop]!=null && full_obj[prop].range && full_obj[prop].type){
+						var r = full_obj[prop].range
+						addedTokens.push(r);
+						//reverseToken(r)
+						//console.log(full_obj[prop])
+						fixMissingTokens(full_obj[prop], full_obj, prop)
+						//prevRange = currRange
+					}
+				}
+			}
+		}
+	}
+	
+}
+
 function traverse(ast, prev, parent, emit) {
 	if (ast && ast.length) {
 		for (var i = 0; i < ast.length; i++) {
@@ -483,6 +691,8 @@ function traverse(ast, prev, parent, emit) {
 			for (var j = 0; j < ast.arguments.length; j++) {
 				traverse(ast.arguments[j],j>0?ast.arguments[j-1]:null,ast,emit)
 			}
+		} else if (ast.type === "Decorator"){
+			toString(ast.expression,ctx);
 		} else if (ast.type === "BlockStatement") {
 			traverse(ast.body,prev,ast,emit);
 		} else if (ast.type === "BinaryExpression") {
@@ -535,9 +745,10 @@ var jsConnector = {
 			esproposal_optional_chaining:true, 
 			types:true
 		});
-		full_parent_obj = JSON.parse(JSON.stringify(ast));
+		full_parent_obj = ast; //JSON.parse(JSON.stringify(ast));
 		full_obj = full_parent_obj.body;
 		unranged_tokens = full_parent_obj.tokens;
+		
 		rangeArangeTokens(full_parent_obj.tokens);
 		traverse(full_obj, null, null, function(emit_ast){
 			return javaConnector.emit(emit_ast);
@@ -641,11 +852,13 @@ var parse = function(argdatabase, argsource, arglistener){
 		esproposal_optional_chaining:true, 
 		types:true
 	});
-	//console.log(JSON.stringify(ast));
-	full_parent_obj = JSON.parse(JSON.stringify(ast));
+	console.log(JSON.stringify(ast));
+	full_parent_obj = ast;//full_parent_obj = JSON.parse(JSON.stringify(ast));
 	full_obj = full_parent_obj.body;
 	unranged_tokens = full_parent_obj.tokens;
 	rangeArangeTokens(full_parent_obj.tokens);
+	//console.log(unranged_tokens);
+	//fixMissingTokens(full_obj);
 	if(arglistener){
 		const elis = require("./" + arglistener);
 		if(elis.start) elis.start(flow,full_obj)
@@ -658,6 +871,40 @@ var parse = function(argdatabase, argsource, arglistener){
 	}
 	toString(full_obj);
 	return intendedFinalString.join("\n");
+};
+module.exports.toPegJs = function(database){
+	var pegStr = "\r\n\r\n";
+	var pegDefStr = "\r\n\r\n";
+	var pegSpecialStr = "\r\n\r\n";
+	if(database.specialKeywords){
+		if(database.specialKeywords.constructor === Array && database.specialKeywords.length>0){
+			pegSpecialStr += "SpecialKeyword\r\n";
+		}
+	}
+	if(database.keywords && database.keywords.constructor === Array && database.keywords.length>0){
+		pegStr += "Keyword\r\n";
+		var k = 0;
+		for(var i=0;i<database.keywords.length;i++){
+			if(database.keywords[i] && database.keywords[i].name && database.keywords[i].name.constructor === String){
+				var _keyword = database.keywords[i].name;
+				var _keywordTitle = _keyword[0].toUpperCase() + _keyword.substr(1) + "Token";
+				pegStr += "  " + (i===0?"=":"/") + " " + _keywordTitle + "\r\n";
+				pegDefStr+= _keywordTitle.padEnd(25,' ') + "= \"" + (_keyword + "\"").padEnd(20,' ') + "!IdentifierPart\r\n";
+
+				if(database.specialKeywords && database.specialKeywords.constructor === Array && database.specialKeywords.length > 0){
+					for(var j=0;j<database.specialKeywords.length;j++){
+						if(database.specialKeywords[j] && database.specialKeywords[j].link && database.specialKeywords[j].link.constructor === String && database.specialKeywords[j].link === _keyword){
+							pegSpecialStr += "  " + (k===0?"=":"/") + " " + _keywordTitle + "\r\n";
+							k++;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	return pegStr + pegDefStr + pegSpecialStr;
 };
 module.exports.parse = parse;
 if(!(typeof global.it === 'function')){
