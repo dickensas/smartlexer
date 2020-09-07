@@ -1,5 +1,19 @@
+FutureReservedWord
+  = ClassToken
+  / ConstToken
+  / EnumToken
+  / ExtendsToken
+  / ImportToken
+  / SuperToken
+
+ReservedWord
+  = Keyword
+  / FutureReservedWord
+  / NullLiteral
+  / BooleanLiteral
+
 Identifier
-  = name:IdentifierName { return name; }
+  = !ReservedWord  name:IdentifierName { return name; }
 
 IdentifierName "identifier"
   = head:IdentifierStart tail:IdentifierPart* {
@@ -13,7 +27,7 @@ IdentifierStart
   = UnicodeLetter
   / "$"
   / "_"
-{{> UnicodeEscapeSequence}}
+  / "\\" sequence:UnicodeEscapeSequence { return sequence; }
 
 IdentifierPart
   = IdentifierStart

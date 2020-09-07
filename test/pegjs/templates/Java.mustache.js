@@ -59,8 +59,7 @@ module.exports.data = {
            return render(text)[0].toUpperCase() + 
 		         (render(text)+"Token").substr(1).padEnd(25," ") + 
 				 render("=") + 
-				 render(" \"" + text + "\"").padEnd(20," ") + 
-				 "!IdentifierPart";
+				 render(" \"" + text + "\"").padEnd(20," ");
         }
     },
 	"tokenlist": function () {

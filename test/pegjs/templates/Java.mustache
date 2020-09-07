@@ -67,8 +67,6 @@
 Start
   = __ program:Program __ { return program; }
 
-SourceCharacter
-  = .
 
 Program
   = body:SourceElements? {
@@ -78,36 +76,9 @@ Program
       };
     }
 
-{{> SpacesAndLines}}
-
-{{> Comments}}
-
-{{> Unicode}}
-
 {{> Identifier}}
 
 {{> JavaTokens}}
-
-// Skipped
-
-__
-  = (WhiteSpace / LineTerminatorSequence / Comment)*
-
-_
-  = (WhiteSpace / MultiLineCommentNoLineTerminator)*
-
-// Automatic Semicolon Insertion
-
-EOS
-  = __ ";"
-  / _ SingleLineComment? LineTerminatorSequence
-  / _ &"}"
-  / __ EOF
-
-EOF
-  = !.
-  
-// End
 
 StatementList
   = head:Statement tail:(__ Statement)* { return buildList(head, tail, 1); }
