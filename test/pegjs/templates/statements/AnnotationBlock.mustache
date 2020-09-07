@@ -1,0 +1,8 @@
+AnnotationBlock
+  = id:AnnotationDeclerationStatement __ body:Block {
+      return {
+        type: "AnnotationBlock",
+		name: id.name,
+        body: body.body
+      };
+    }

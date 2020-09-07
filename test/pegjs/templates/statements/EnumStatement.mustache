@@ -1,0 +1,7 @@
+EnumStatement
+  = EnumToken __ name:Identifier {
+      return { 
+        type: "EnumStatement",
+        name: name.name
+      };
+  }

@@ -1,8 +1,7 @@
 ClassStatement
-  = ClassToken __ name:Identifier __ body:Block {
+  = ClassToken __ name:Identifier {
       return { 
-	    type: "ClassStatement",
-		name: name.name,
-		block: body
-	  };
+        type: "ClassStatement",
+        name: name.name
+      };
   }

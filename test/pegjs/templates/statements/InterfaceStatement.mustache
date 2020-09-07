@@ -1,0 +1,7 @@
+InterfaceStatement
+  = InterfaceToken __ name:Identifier {
+      return { 
+        type: "InterfaceStatement",
+        name: name.name
+      };
+  }

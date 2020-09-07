@@ -1,0 +1,8 @@
+InterfaceBlock
+  = id:InterfaceStatement __ body:Block {
+      return {
+        type: "InterfaceBlock",
+		name: id.name,
+        body: body.body
+      };
+    }

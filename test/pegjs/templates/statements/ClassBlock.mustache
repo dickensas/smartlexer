@@ -1,0 +1,8 @@
+ClassBlock
+  = id:ClassStatement __ body:Block {
+      return {
+        type: "ClassBlock",
+		name: id.name,
+        body: body.body
+      };
+    }

@@ -1,4 +1,5 @@
 NewExpression
-  = NewToken __ callee:NewExpression {
+  = MemberExpression
+  / NewToken __ callee:NewExpression {
       return { type: "NewExpression", callee: callee, arguments: [] };
     }

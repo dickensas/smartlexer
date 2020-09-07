@@ -1,0 +1,8 @@
+EnumBlock
+  = id:EnumStatement __ body:Block {
+      return {
+        type: "EnumBlock",
+		name: id.name,
+        body: body.body
+      };
+    }

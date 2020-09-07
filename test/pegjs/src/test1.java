@@ -1,3 +1,1 @@
-class X {
-    int x;
-}
+x = 10;

@@ -1,0 +1,7 @@
+AnnotationDeclerationStatement
+  = "@" InterfaceToken __ name:Identifier {
+      return { 
+        type: "AnnotationDeclerationStatement",
+        name: name.name
+      };
+  }
