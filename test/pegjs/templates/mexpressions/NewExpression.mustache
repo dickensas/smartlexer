@@ -1,0 +1,4 @@
+NewExpression
+  = NewToken __ callee:NewExpression {
+      return { type: "NewExpression", callee: callee, arguments: [] };
+    }

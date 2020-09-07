@@ -1,0 +1,5 @@
+PrimaryExpression
+  = ThisToken { return { type: "ThisExpression" }; }
+  / Identifier
+  / Literal
+  / "(" __ expression:Expression __ ")" { return expression; }

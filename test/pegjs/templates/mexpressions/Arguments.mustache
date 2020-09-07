@@ -1,0 +1,9 @@
+Arguments
+  = "(" __ args:(ArgumentList __)? ")" {
+      return optionalList(extractOptional(args, 0));
+    }
+
+ArgumentList
+  = head:AssignmentExpression tail:(__ "," __ AssignmentExpression)* {
+      return buildList(head, tail, 3);
+    }

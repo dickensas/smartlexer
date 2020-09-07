@@ -1,0 +1,24 @@
+MemberExpression
+  = head:(
+        PrimaryExpression
+      / NewToken __ callee:MemberExpression __ args:Arguments {
+          return { type: "NewExpression", callee: callee, arguments: args };
+        }
+    )
+    tail:(
+        __ "." __ property:IdentifierName {
+          return { property: property, computed: false };
+        }
+    )*
+    {
+      return tail.reduce(function(result, element) {
+        return {
+          type: "MemberExpression",
+          object: result,
+          dtype: element.dtype,
+          id: element.id,
+          property: element.property,
+          computed: element.computed
+        };
+      }, head);
+    }

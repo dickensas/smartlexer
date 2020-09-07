@@ -1,0 +1,3 @@
+BooleanLiteral
+  = TrueToken  { return { type: "Literal", value: true  }; }
+  / FalseToken { return { type: "Literal", value: false }; }

@@ -1,0 +1,24 @@
+Identifier
+  = name:IdentifierName { return name; }
+
+IdentifierName "identifier"
+  = head:IdentifierStart tail:IdentifierPart* {
+      return {
+        type: "Identifier",
+        name: head + tail.join("")
+      };
+    }
+
+IdentifierStart
+  = UnicodeLetter
+  / "$"
+  / "_"
+{{> UnicodeEscapeSequence}}
+
+IdentifierPart
+  = IdentifierStart
+  / UnicodeCombiningMark
+  / UnicodeDigit
+  / UnicodeConnectorPunctuation
+  / "\u200C"
+  / "\u200D"

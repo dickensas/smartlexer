@@ -522,32 +522,11 @@ EOF
 PrimaryExpression
   = ThisToken { return { type: "ThisExpression" }; }
   / Identifier
-  / GenericLiteral
   / ArrayLiteral
   / ArrayInitLiteral
   / Literal
   / ObjectLiteral
   / "(" __ expression:Expression __ ")" { return expression; }
-
-GenericLiteral
-  = "<" __ elision:(Elision __)? ">" {
-      return {
-        type: "GenericInitExpression",
-        elements: optionalList(extractOptional(elision, 0))
-      };
-    }
-  / "<" __ elements:ElementList __ ">" {
-      return {
-        type: "GenericInitExpression",
-        elements: elements
-      };
-    }
-  / "<" __ elements:ElementList __ "," __ elision:(Elision __)? ">" {
-      return {
-        type: "GenericInitExpression",
-        elements: elements.concat(optionalList(extractOptional(elision, 0)))
-      };
-    }
 
 ArrayInitLiteral
   = "{" __ elision:(Elision __)? "}" {
@@ -699,7 +678,7 @@ MemberExpression
 NewExpression
   = MemberExpression
   / NewToken __ id:GenericIdentifier __ callee:NewExpression  {
-      return { type: "NewExpression", x:-1, id:id, data:data, callee: callee, arguments: [] };
+      return { type: "NewExpression", id:id, callee: callee, arguments: [] };
     }
   / NewToken __ id:ArrayIdentifier __ data:ArrayInitLiteral __ callee:NewExpression  {
       return { type: "NewExpression", id:id, data:data, callee: callee, arguments: [] };
@@ -742,12 +721,7 @@ CallExpression
     }
 
 Arguments
-  = 
-    "<" __ args:(ArgumentList __)? ">" {
-      return optionalList(extractOptional(args, 0));
-    }
-  /
-    "(" __ args:(ArgumentList __)? ")" {
+  = "(" __ args:(ArgumentList __)? ")" {
       return optionalList(extractOptional(args, 0));
     }
 
@@ -1168,6 +1142,22 @@ GenericIdentifier
     }
   /
     id:Identifier __ "<" __ type:(GenericIdentifier __ "," __ GenericIdentifier) __ ">" __ {
+      return {
+        type: "GenericIdentifier",
+        kind: id,
+		type: type
+      };
+    }
+  /
+    id:Identifier __ "<" __ type:(Identifier __ "," __ GenericIdentifier) __ ">" __ {
+      return {
+        type: "GenericIdentifier",
+        kind: id,
+		type: type
+      };
+    }
+  /
+    id:Identifier __ "<" __ type:(GenericIdentifier __ "," __ Identifier) __ ">" __ {
       return {
         type: "GenericIdentifier",
         kind: id,

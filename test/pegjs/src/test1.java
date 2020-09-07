@@ -1,1 +1,3 @@
-HashMap<String, String> capitalCities;
+class X {
+    int x;
+}

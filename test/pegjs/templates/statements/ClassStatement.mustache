@@ -1,0 +1,8 @@
+ClassStatement
+  = ClassToken __ name:Identifier __ body:Block {
+      return { 
+	    type: "ClassStatement",
+		name: name.name,
+		block: body
+	  };
+  }
