@@ -1,0 +1,7 @@
+ArrayIdentifier
+  = id:Identifier __ "[" __ "]" __ {
+      return {
+        type: "ArrayIdentifier",
+        kind: id
+      };
+    }

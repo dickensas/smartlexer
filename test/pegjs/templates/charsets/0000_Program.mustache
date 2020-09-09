@@ -76,10 +76,6 @@ Program
       };
     }
 
-{{> Identifier}}
-
-{{> JavaTokens}}
-
 StatementList
   = head:Statement tail:(__ Statement)* { return buildList(head, tail, 1); }
 

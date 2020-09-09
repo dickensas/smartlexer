@@ -1,0 +1,7 @@
+AnnotationStatement
+  = "@" name:Identifier {
+      return { 
+        type: "AnnotationStatement",
+        name: name.name
+      };
+  }

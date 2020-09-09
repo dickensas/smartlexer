@@ -1,0 +1,23 @@
+GenericIdentifier
+  = id:Identifier __ "<" __ type:GenericTypeSequence __ ">" __ {
+      return {
+        type: "GenericIdentifier",
+        kind: id,
+        type: type
+      };
+    }
+  /
+    id:Identifier __ "<" __ type:TypeSequence __ ">" __ {
+      return {
+        type: "GenericIdentifier",
+        kind: id,
+        type: type
+      };
+    }
+  /
+    id:Identifier __ "<" __ ">" __ {
+      return {
+        type: "GenericIdentifier",
+        kind: id
+      };
+    }

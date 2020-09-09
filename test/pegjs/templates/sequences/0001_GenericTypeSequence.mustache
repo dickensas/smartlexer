@@ -1,0 +1,7 @@
+GenericTypeSequence
+  = head:GenericIdentifier tail:(__ "," __ GenericTypeSequence)* {
+      return {
+        type: "GenericTypeSequence",
+        list: buildList(head, tail, 0)
+      };
+    }

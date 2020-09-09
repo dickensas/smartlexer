@@ -7,29 +7,55 @@ const path = require("path")
 describe('PEG.js Grammer', function () {
     it('Should parse Java annotation', function () {
     	
-		const jsonData = require("../../test/pegjs/templates/Java.mustache.js").data
-		var template =fs.readFileSync('test/pegjs/templates/java.mustache', 'utf8');
-		const Identifier =fs.readFileSync('test/pegjs/templates/Identifier.mustache', 'utf8');
-		const JavaTokens =fs.readFileSync('test/pegjs/templates/JavaTokens.mustache', 'utf8');
+		var template = '';
 		
 		//console.log(jsonData)
-		
-		var partials = {
-			Identifier: Identifier,
-			JavaTokens: JavaTokens
-		};
+		var jsonData = {};
+		var partials = {};
 		//, "expressions"
-		var folders = ["charsets", "literals", "operators", "mexpressions", "statements"];
-		
+		var folders = ["charsets", "literals", "sequences", "midentifiers", "operators", "statements", "mexpressions"];
+		var inc = 0;
 		for(var x=0;x<folders.length;x++){
 			var directoryPath = path.join(__dirname, 'templates/' + folders[x]);
 			var label = folders[x][0].toUpperCase() + folders[x].substr(1,folders[x].length-2);
 		
 			var files = fs.readdirSync(directoryPath);
-		
+			files = files.filter(function(file) {
+			    return path.extname(file).toLowerCase() === ".mustache";
+			});
+			inc = 0;
+			
+			
+			
+			for(var i=0; i<files.length;i++){
+				var file = files[i];
+				var localData = {};
+				try{
+					var _ldata = require("../../test/pegjs/templates/"+ folders[x] + "/" + file + ".js");
+					if(_ldata.data) localData = _ldata.data;
+				}catch(ex){}
+				var content = fs.readFileSync("test/pegjs/templates/" + folders[x] + "/" + file, 'utf8');
+				content = mustache.render(content, localData);
+				file = file.substr(0,file.indexOf("."));
+			    file = file.substr(5);
+			    //console.log(file);
+				partials[file] = content;
+				template = template + "\r\n{{> " + file + "}}\r\n";
+			}
+			
 			for(var i in files){
 				var file = files[i];
+				if(file.toLowerCase().endsWith('.js')) continue
+//				var oldfile = file;
 				file = file.substr(0,file.indexOf("."));
+				file = file.substr(5);
+//				if(file.indexOf("_")==-1){
+//					console.log((inc+"").padStart(4,"0")+"_"+file)
+//					file = (inc+"").padStart(4,"0")+"_"+file;
+//					inc++;
+//					fs.renameSync("test/pegjs/templates/" + folders[x] + "/" +oldfile, "test/pegjs/templates/" + folders[x] + "/" + file);
+//				}
+				
 				if(i==0){
 					template = template + "\r\n" + label + "\r\n";
 					template = template + "  = " + file + "\r\n";
@@ -37,24 +63,16 @@ describe('PEG.js Grammer', function () {
 					template = template + "  / " + file + "\r\n";
 				}
 			}
-			
-			
-			for(var i in files){
-				var file = files[i];
-				var content = fs.readFileSync("test/pegjs/templates/" + folders[x] + "/" + file, 'utf8');
-				file = file.substr(0,file.indexOf("."));
-				partials[file] = content;
-				template = template + "\r\n{{> " + file + "}}\r\n";
-			}
 		}
 
 		const grammer = mustache.render(template, jsonData, partials);
-		//const grammer = fs.readFileSync('test/pegjs/data/java.pegjs', 'utf8');
-		//console.log(grammer);
+//		//console.log(grammer1);
+//		const grammer = fs.readFileSync('.settings/my.txt', 'utf8');
+        console.log(grammer);
 		var parser = pegjs.generate(grammer);
-		
+//		
 		const sourceCode = fs.readFileSync("test/pegjs/src/test1.java", "utf8");
-		
+//		
 		var ast1 = parser.parse(sourceCode);
 		console.log(JSON.stringify(ast1));
 		
