@@ -17,8 +17,6 @@ gradle-app.setting
 /.settings/
 /.classpath
 /.project
-/gradlew
-/gradlew.bat
 /source.sql
 /node_modules/
 /package-lock.json
