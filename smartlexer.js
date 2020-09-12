@@ -287,10 +287,10 @@ function isOneOf(arr, name){
 	return false;
 }
 
-function toString(ast, ctx) {
+function toString(ast, ctx, noScan) {
 	if (ast.length) {
 		for (var i = 0; i < ast.length; i++) {
-			toString(ast[i],ctx);
+			toString(ast[i],ctx,noScan);
 		}
 	} else {
 		
@@ -298,7 +298,7 @@ function toString(ast, ctx) {
 			indend(ast.callee.name)
 			indend("(");
 			for (var j = 0; j < ast.arguments.length; j++) {
-				toString(ast.arguments[j],ctx)
+				toString(ast.arguments[j],ctx,true)
 				if (j != ast.arguments.length - 1) {
 					indend(",")
 				}
@@ -306,68 +306,68 @@ function toString(ast, ctx) {
 			indend(")");
 		} else if(ast.type === "ForStatement"){
 			var _for = fakeIdentifier("for");
-			toString(_for,_for);
-			toString(ast.init,_for);
-			toString(ast.test,_for);
-			toString(ast.update,_for);
-			toString(ast.body,null);
+			toString(_for,_for,noScan);
+			toString(ast.init,_for,noScan);
+			toString(ast.test,_for,noScan);
+			toString(ast.update,_for,noScan);
+			toString(ast.body,null,noScan);
 		} else if(ast.type === "FunctionExpression"){
-			toString(ast.params,ctx);
-			toString(ast.body,ctx);
+			toString(ast.params,ctx,noScan);
+			toString(ast.body,ctx,noScan);
 		} else if(ast.type === "Decorator"){
-			toString(ast.expression,ctx);
+			toString(ast.expression,ctx,noScan);
 		} else if(ast.type === "MethodDefinition"){
-			toString(ast.key,ctx);
-			toString(ast.decorators,ctx);
-			toString(ast.value,ctx);
+			toString(ast.key,ctx,noScan);
+			toString(ast.decorators,ctx,noScan);
+			toString(ast.value,ctx,noScan);
 		} else if(ast.type === "BlockStatement") {
-			toString(ast.body,ctx);
+			toString(ast.body,ctx,noScan);
 		} else if(ast.type === "LabeledStatement"){
-			toString(ast.label,ctx);
-			toString(ast.body,ctx);
+			toString(ast.label,ctx,noScan);
+			toString(ast.body,ctx,noScan);
 		} else if(ast.type === "TypeAnnotation"){
-			toString(ast.typeAnnotation);
+			toString(ast.typeAnnotation,ctx,noScan);
 		} else if(ast.type === "GenericTypeAnnotation"){
-			toString(ast.id,ctx);
+			toString(ast.id,ctx,noScan);
 		} else if(ast.type === "ClassProperty"){
-			toString(ast.key,ctx);
+			toString(ast.key,ctx,noScan);
 			if(ast.typeAnnotation!=null)
-			   toString(ast.typeAnnotation,ctx);
+			   toString(ast.typeAnnotation,ctx,noScan);
 		} else if(ast.type === "ClassBody"){
 			toString(ast.body,ctx);
 		} else if(ast.type === "ClassDeclaration"){
 			database.keywords && database.keywords.push({name:ast.id.name})
 			indend("class ");
-			toString(ast.id,ctx);
-			toString(ast.body,ctx);
+			toString(ast.id,ctx,noScan);
+			toString(ast.body,ctx,noScan);
 		} else if (ast.type === "ReturnStatement") {
 			indend("return ");
-			toString(ast.argument,ctx);
+			toString(ast.argument,ctx,noScan);
 		} else if (ast.type === "ExpressionStatement") {
-			toString(ast.expression,ctx);
+			toString(ast.expression,ctx,noScan);
 		} else if (ast.type === "Literal") {
 			if (ast.raw != null && !(ast.value == null && ast.raw == "null")){
-				prevToken(ast.range,ctx);
+				if(!noScan)prevToken(ast.range,ctx,noScan);
 				indend(ast.raw);
-				nextToken(ast.range,ctx);
+				if(!noScan)nextToken(ast.range,ctx,noScan);
 			}else if (ast.value != null){
-				prevToken(ast.range,ctx);
+				if(!noScan)prevToken(ast.range,ctx,noScan);
 				indend(ast.value);
-				nextToken(ast.range,ctx);
+				if(!noScan)nextToken(ast.range,ctx,noScan);
 			}
 		} else if (ast.type === "ImportDeclaration") {
 			indend("import ")
 			for (var j = 0; j < ast.specifiers.length; j++) {
-				toString(ast.specifiers[j],ctx)
+				toString(ast.specifiers[j],ctx,noScan)
 				//indend(".")
 			}
 
 		} else if (ast.type === "ImportDefaultSpecifier") {
-			toString(ast.local,ctx)
+			toString(ast.local,ctx,noScan)
 		} else if (ast.type === "ThisExpression") {
-			toString(fakeIdentifier(getToken(ast.range)),ctx)
+			toString(fakeIdentifier(getToken(ast.range)),ctx,noScan)
 		} else if (ast.type === "Identifier") {
-			if(ast.prefixAttribute) toString(ast.prefixAttribute,ctx)
+			if(ast.prefixAttribute) toString(ast.prefixAttribute,ctx,noScan)
 			if (isWrapAt(ast.name)) {
 				doWrap(gutter - (ast.name.length + 1))
 			}
@@ -423,13 +423,13 @@ function toString(ast, ctx) {
 		} else if (ast.type === "UpdateExpression") {
 			if(ast.prefix === true){
 				indend(ast.operator)
-				toString(ast.argument,ctx)
+				toString(ast.argument,ctx,noScan)
 			}else{
-				toString(ast.argument,ctx)
+				toString(ast.argument,ctx,noScan)
 				indend(ast.operator)
 			}
 		} else if (ast.type === "BinaryExpression") {
-			toString(ast.left,ctx)
+			toString(ast.left,ctx,noScan)
 			indend(ast.operator)
 			if (isWrapBy(ast.operator, ast.range)) {
 				doWrap()
@@ -441,19 +441,19 @@ function toString(ast, ctx) {
 				//toString(ast.left,ctx)
 			//} else {
 				if(ast.left.value===null && ast.left.type=="Literal" && getToken(ast.left.range).value===ast.operator){
-					toString(fakeIdentifier(getToken(ast.left.range,-1)),ctx)
+					toString(fakeIdentifier(getToken(ast.left.range,-1)),ctx,noScan)
 				}else{
-					toString(ast.left,ctx)
+					toString(ast.left,ctx,noScan)
 				}
 				indend(ast.operator)
-				toString(ast.right,ctx)
+				toString(ast.right,ctx,noScan)
 			//}
 		} else if (ast.type === "MemberExpression") {
-			toString(ast.object,ctx)
-			toString(ast.property,ctx)
+			toString(ast.object,ctx,noScan)
+			toString(ast.property,ctx,noScan)
 		} else if (ast.type === "SequenceExpression") {
 			for (var j = 0; j < ast.expressions.length; j++) {
-				toString(ast.expressions[j],ctx)
+				toString(ast.expressions[j],ctx,noScan)
 				if (j != ast.expressions.length - 1) {
 					indend(",")
 					if (isWrapBy(",")) {
