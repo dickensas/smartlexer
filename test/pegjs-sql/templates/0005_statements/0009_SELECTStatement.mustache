@@ -1,9 +1,10 @@
 SELECTStatement
-  = SELECTToken __ fields:MemberSequence __ from:FROMExpression __ EOS {
+  = SELECTToken __ fields:MemberSequence __ from:FROMExpression __ where:WHEREExpression __ EOS {
       return {
         type: "SELECTStatement",
         fields: fields,
-        from: from
+        from: from,
+        where: where
       };
     }
 

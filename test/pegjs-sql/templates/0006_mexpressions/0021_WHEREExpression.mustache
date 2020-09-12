@@ -1,0 +1,10 @@
+WHEREExpression
+  = WHEREToken __ left:MemberExpression __ operator:InnerJoinOperator __ right:MemberExpression  {
+      return {
+        type: "WHEREExpression",
+        left:left,
+        operator:operator,
+        right:right
+      };
+    }
+

@@ -4,7 +4,7 @@ const mustache = require('mustache');
 const fs = require("fs");
 const path = require("path")
 
-describe('PEG.js Grammer', function () {
+describe('PEG.js Grammer SQL', function () {
     it('Should parse SQL', function () {
 
 		var template = '';
@@ -70,7 +70,7 @@ describe('PEG.js Grammer', function () {
 		const grammer = mustache.render(template, jsonData, partials);
 //		//console.log(grammer1);
 //		const grammer = fs.readFileSync('.settings/my.txt', 'utf8');
-        console.log(grammer);
+        //console.log(grammer);
 		var parser = pegjs.generate(grammer);
 //		
 		const sourceCode = fs.readFileSync("test/pegjs-sql/src/test1.sql", "utf8");
