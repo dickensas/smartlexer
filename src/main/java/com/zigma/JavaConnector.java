@@ -1,9 +1,8 @@
 package com.zigma;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
+import java.util.Scanner;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,7 +28,7 @@ public class JavaConnector {
         button.setVisible(true);
         InputStream fis = null;
         try {
-        	String database = new String("{}".getBytes(), "UTF-8");
+        	String database = new Scanner(new File("test\\sql\\data\\sql.json")).useDelimiter("\\Z").next();
 			javascriptConnector.call("setJSON", "database", database);
 		} catch (Exception e) {
 			e.printStackTrace();

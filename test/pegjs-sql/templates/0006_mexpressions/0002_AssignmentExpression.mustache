@@ -1,0 +1,28 @@
+Initialiser
+  = "=" !"=" __ expression:AssignmentExpression { return expression; }
+
+AssignmentExpression
+  = left:LeftHandSideExpression __
+    "=" !"=" __
+    right:AssignmentExpression
+    {
+      return {
+        type: "AssignmentExpression",
+        operator: "=",
+        left: left,
+        right: right
+      };
+    }
+  / left:LeftHandSideExpression __
+    operator:AssignmentOperator __
+    right:AssignmentExpression
+    {
+      return {
+        type: "AssignmentExpression",
+        operator: operator,
+        left: left,
+        right: right
+      };
+    }
+  / ConditionalExpression
+

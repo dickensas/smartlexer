@@ -1,0 +1,8 @@
+FROMExpression
+  = FROMToken __ tables:TableSequence {
+      return {
+        type: "FROMExpression",
+        tables: tables
+      };
+    }
+

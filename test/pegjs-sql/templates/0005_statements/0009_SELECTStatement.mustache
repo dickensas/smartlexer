@@ -1,0 +1,9 @@
+SELECTStatement
+  = SELECTToken __ fields:MemberSequence __ from:FROMExpression __ EOS {
+      return {
+        type: "SELECTStatement",
+        fields: fields,
+        from: from
+      };
+    }
+

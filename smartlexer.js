@@ -538,17 +538,17 @@ function findSuffixMissingToken(r, arg_parent) {
 	return missings;
 }
 function addSuffixMissing(missings, arg_parent, arg_prop, inc){
-	console.log("a1")
+	
 	if(typeof arg_prop !== "undefined" && typeof inc !== "undefined" && typeof arg_parent !== "undefined") {
 		var arr_prop = arg_parent[arg_prop];
-		console.log("a2")
+		
 		if(missings && missings.length>0 && arr_prop && arr_prop!=null && arr_prop.constructor === Array){
 			var copy_arr_prop = [];
-			console.log("a3")
+			
 			for(var j=0;j<arr_prop.length;j++){
 				copy_arr_prop.push(arr_prop[j])
 			}
-			console.log("a4")
+			
 			copy_arr_prop.push({
 				"type" : "Identifier",
 				"loc" : missings[0].token.loc,
@@ -557,8 +557,8 @@ function addSuffixMissing(missings, arg_parent, arg_prop, inc){
 				"typeAnnotation" : null,
 				"optional" : false
 			});
-			console.log("a5")
-			console.log("added suffix missing")
+			
+			
 			arg_parent[arg_prop] = copy_arr_prop;
 		}
 	}
@@ -601,7 +601,7 @@ function fixMissingTokens(full_obj, arg_parent, arg_prop, inc) {
 			fixMissingTokens(full_obj[i], arg_parent, arg_prop, i)
 		}
 		var missings = findSuffixMissingToken(full_obj[full_obj.length-1].range, full_obj[full_obj.length-1]);
-		console.log(missings)
+		
 		addSuffixMissing(missings, arg_parent, arg_prop, full_obj.length-1);
 	} else {
 		if(full_obj!=null){
@@ -839,8 +839,43 @@ function unstripXML(joinedStr) {
 	// console.log(joinedStr);
 	return joinedStr;
 }
+
+toPegJs = function(database){
+	var pegStr = "\r\n\r\n";
+	var pegDefStr = "\r\n\r\n";
+	var pegSpecialStr = "\r\n\r\n";
+	if(database.specialKeywords){
+	    if(database.specialKeywords.constructor === Array && database.specialKeywords.length>0){
+	        pegSpecialStr += "SpecialKeyword\r\n";
+	    }
+	}
+	if(database.keywords && database.keywords.constructor === Array && database.keywords.length>0){
+	    pegStr += "Keyword\r\n";
+	    var k = 0;
+	    for(var i=0;i<database.keywords.length;i++){
+	        if(database.keywords[i] && database.keywords[i].name && database.keywords[i].name.constructor === String){
+	            var _keyword = database.keywords[i].name;
+	            var _keywordTitle = _keyword[0].toUpperCase() + _keyword.substr(1) + "Token";
+	            pegStr += "  " + (i===0?"=":"/") + " " + _keywordTitle + "\r\n";
+	            pegDefStr+= _keywordTitle.padEnd(25,' ') + "= \"" + (_keyword + "\"").padEnd(20,' ') + "!IdentifierPart\r\n";
+	
+	            if(database.specialKeywords && database.specialKeywords.constructor === Array && database.specialKeywords.length > 0){
+	                for(var j=0;j<database.specialKeywords.length;j++){
+	                    if(database.specialKeywords[j] && database.specialKeywords[j].link && database.specialKeywords[j].link.constructor === String && database.specialKeywords[j].link === _keyword){
+	                        pegSpecialStr += "  " + (k===0?"=":"/") + " " + _keywordTitle + "\r\n";
+	                        k++;
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
+    return pegStr + pegDefStr + pegSpecialStr;
+};
+        
 var parse = function(argdatabase, argsource, arglistener){
-	console.log("parser starting");
+	//console.log("parser starting");
 	const fs = require("fs")
 	const flow = require("flow-parser")
 	database = JSON.parse(argdatabase);
@@ -852,7 +887,7 @@ var parse = function(argdatabase, argsource, arglistener){
 		esproposal_optional_chaining:true, 
 		types:true
 	});
-	console.log(JSON.stringify(ast));
+	//console.log(JSON.stringify(ast));
 	full_parent_obj = ast;//full_parent_obj = JSON.parse(JSON.stringify(ast));
 	full_obj = full_parent_obj.body;
 	unranged_tokens = full_parent_obj.tokens;
@@ -872,41 +907,11 @@ var parse = function(argdatabase, argsource, arglistener){
 	toString(full_obj);
 	return intendedFinalString.join("\n");
 };
-module.exports.toPegJs = function(database){
-	var pegStr = "\r\n\r\n";
-	var pegDefStr = "\r\n\r\n";
-	var pegSpecialStr = "\r\n\r\n";
-	if(database.specialKeywords){
-		if(database.specialKeywords.constructor === Array && database.specialKeywords.length>0){
-			pegSpecialStr += "SpecialKeyword\r\n";
-		}
-	}
-	if(database.keywords && database.keywords.constructor === Array && database.keywords.length>0){
-		pegStr += "Keyword\r\n";
-		var k = 0;
-		for(var i=0;i<database.keywords.length;i++){
-			if(database.keywords[i] && database.keywords[i].name && database.keywords[i].name.constructor === String){
-				var _keyword = database.keywords[i].name;
-				var _keywordTitle = _keyword[0].toUpperCase() + _keyword.substr(1) + "Token";
-				pegStr += "  " + (i===0?"=":"/") + " " + _keywordTitle + "\r\n";
-				pegDefStr+= _keywordTitle.padEnd(25,' ') + "= \"" + (_keyword + "\"").padEnd(20,' ') + "!IdentifierPart\r\n";
+if(typeof module != 'undefined' && typeof module.exports != 'undefined'){
+    module.exports.toPegJs = toPegJs; 
+	module.exports.parse = parse;
+}
 
-				if(database.specialKeywords && database.specialKeywords.constructor === Array && database.specialKeywords.length > 0){
-					for(var j=0;j<database.specialKeywords.length;j++){
-						if(database.specialKeywords[j] && database.specialKeywords[j].link && database.specialKeywords[j].link.constructor === String && database.specialKeywords[j].link === _keyword){
-							pegSpecialStr += "  " + (k===0?"=":"/") + " " + _keywordTitle + "\r\n";
-							k++;
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	return pegStr + pegDefStr + pegSpecialStr;
-};
-module.exports.parse = parse;
 if(!(typeof global.it === 'function')){
 	if (typeof process === 'object') {
 		if (typeof process.versions === 'object') {
@@ -934,4 +939,19 @@ if(!(typeof global.it === 'function')){
 		}
 	}
 }
-
+if( typeof navigator !== 'undefined' && navigator.appVersion){
+    if( navigator.appVersion.indexOf('PhantomJS')!=-1 ){
+        String.prototype.padStart = function(len, ch){
+            return Array(len - this.length + 1).join(ch) + this;
+        }
+        console.log("PhantomJS detected " + navigator.appVersion.substr(navigator.appVersion.indexOf("PhantomJS")).split(" ")[0] )
+        const fs = require("fs");
+        const system = require('system');
+        const databaseJson = system.args[2]?system.args[2]:'test\\sql\\data\\sql.json';
+        const source = system.args[1]?system.args[1]:'test\\sql\\src\\test1.sql';
+        const db = fs.open(databaseJson, 'r').read();
+        const src = fs.open(source, 'r').read();
+        var strP = parse(db, src);
+        console.log(strP);
+    }
+}

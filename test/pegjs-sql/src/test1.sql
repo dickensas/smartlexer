@@ -1,0 +1,1 @@
+SELECT a.x , a.y FROM employee  ,   department   d   ,     profile    

@@ -1,0 +1,10 @@
+// Tokens
+{{#tokenize}}lang{{/tokenize}} !IdentifierPart
+{{#tokens}}
+{{#tokenize}}{{name}}{{/tokenize}} !IdentifierPart
+{{/tokens}}
+
+Keyword
+{{#tokens}}
+  {{#first}}= {{/first}}{{^first}}/ {{/first}}{{#tokenlist}}{{name}}{{/tokenlist}}
+{{/tokens}}

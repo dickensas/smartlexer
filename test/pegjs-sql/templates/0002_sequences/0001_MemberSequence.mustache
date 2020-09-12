@@ -1,0 +1,7 @@
+MemberSequence
+  = head:MemberExpression tail:(__ "," __ MemberExpression)* {
+      return {
+        type: "MemberSequence",
+        list: buildList(head, tail, 3)
+      };
+    }

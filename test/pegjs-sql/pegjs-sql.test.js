@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path")
 
 describe('PEG.js Grammer', function () {
-    it('Should parse Java annotation', function () {
+    it('Should parse SQL', function () {
 
 		var template = '';
 
@@ -33,10 +33,10 @@ describe('PEG.js Grammer', function () {
 				var file = files[i];
 				var localData = {};
 				try{
-					var _ldata = require("../../test/pegjs/templates/"+ folders[x] + "/" + file + ".js");
+					var _ldata = require("../../test/pegjs-sql/templates/"+ folders[x] + "/" + file + ".js");
 					if(_ldata.data) localData = _ldata.data;
 				}catch(ex){}
-				var content = fs.readFileSync("test/pegjs/templates/" + folders[x] + "/" + file, 'utf8');
+				var content = fs.readFileSync("test/pegjs-sql/templates/" + folders[x] + "/" + file, 'utf8');
 				content = mustache.render(content, localData);
 				file = file.substr(0,file.indexOf("."));
 			    file = file.substr(5);
@@ -73,7 +73,7 @@ describe('PEG.js Grammer', function () {
         console.log(grammer);
 		var parser = pegjs.generate(grammer);
 //		
-		const sourceCode = fs.readFileSync("test/pegjs/src/test1.java", "utf8");
+		const sourceCode = fs.readFileSync("test/pegjs-sql/src/test1.sql", "utf8");
 //		
 		var ast1 = parser.parse(sourceCode);
 		console.log(JSON.stringify(ast1));

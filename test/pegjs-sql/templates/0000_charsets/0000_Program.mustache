@@ -1,0 +1,105 @@
+// Java Grammar
+// ============
+
+{
+  var TYPES_TO_PROPERTY_NAMES = {
+    CallExpression:   "callee",
+    MemberExpression: "object",
+  };
+
+  function filledArray(count, value) {
+    return Array.apply(null, new Array(count))
+      .map(function() { return value; });
+  }
+
+  function extractOptional(optional, index) {
+    return optional ? optional[index] : null;
+  }
+
+  function extractList(list, index) {
+    return list.map(function(element) {
+        return element[index]; 
+    });
+  }
+
+  function buildList(head, tail, index) {
+    return [head].concat(extractList(tail, index));
+  }
+  
+  function buildTableList(head, tail, alias, index) {
+    //console.log(head);
+    //console.log(tail[0]);
+    /*for(var p1 in tail[0]){
+        console.log(p1);
+        console.log(tail[0][3].list);
+    }*/
+    console.log(index + "-");
+    if(alias!=null)
+    head.alias = alias.name;
+    head.type = "Table"
+    if(tail[0])
+    return [head].concat(tail[0][3].list);
+    else
+    return [head];
+  }
+
+  function buildBinaryExpression(head, tail) {
+    return tail.reduce(function(result, element) {
+      return {
+        type: "BinaryExpression",
+        operator: element[1],
+        left: result,
+        right: element[3]
+      };
+    }, head);
+  }
+
+  function buildLogicalExpression(head, tail) {
+    return tail.reduce(function(result, element) {
+      return {
+        type: "LogicalExpression",
+        operator: element[1],
+        left: result,
+        right: element[3]
+      };
+    }, head);
+  }
+
+  function optionalList(value) {
+    return value !== null ? value : [];
+  }
+  
+  function optionalNonEmptyList(value) {
+	var arr = [];
+	if(value && value.constructor === Array){
+		for(var i=0;i<value.length;i++)
+			if(value[i] && value[i].constructor === Object) arr.push(value[i]);
+    }else if(value && value.constructor === Object){
+		arr.push(value)
+	}
+	return value !== null ? arr : [];
+  }
+}
+
+Start
+  = __ program:Program __ { return program; }
+
+
+Program
+  = body:SourceElements? {
+      return {
+        type: "Program",
+        body: optionalList(body)
+      };
+    }
+
+StatementList
+  = head:Statement tail:(__ Statement)* { return buildList(head, tail, 1); }
+
+SourceElements
+  = head:SourceElement tail:(__ SourceElement)* {
+      return buildList(head, tail, 1);
+    }
+
+SourceElement
+  = Statement

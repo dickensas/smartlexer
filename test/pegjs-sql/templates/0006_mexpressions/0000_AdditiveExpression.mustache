@@ -1,0 +1,4 @@
+AdditiveExpression
+  = head:MultiplicativeExpression
+    tail:(__ AdditiveOperator __ MultiplicativeExpression)*
+    { return buildBinaryExpression(head, tail); }

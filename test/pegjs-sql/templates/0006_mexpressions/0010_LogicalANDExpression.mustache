@@ -1,0 +1,4 @@
+LogicalANDExpression
+  = head:BitwiseORExpression
+    tail:(__ LogicalANDOperator __ BitwiseORExpression)*
+    { return buildLogicalExpression(head, tail); }

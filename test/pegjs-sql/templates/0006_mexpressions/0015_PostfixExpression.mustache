@@ -1,0 +1,10 @@
+PostfixExpression
+  = argument:LeftHandSideExpression _ operator:PostfixOperator {
+      return {
+        type: "UpdateExpression",
+        operator: operator,
+        argument: argument,
+        prefix: false
+      };
+    }
+  / LeftHandSideExpression

@@ -20,8 +20,6 @@ describe('SQL', function () {
 		    	
 			});
 		});
-		
-    	
     });
   });
 });

@@ -1,0 +1,6 @@
+Expression
+  = head:AssignmentExpression tail:(__ "," __ AssignmentExpression)* {
+      return tail.length > 0
+        ? { type: "SequenceExpression", expressions: buildList(head, tail, 3) }
+        : head;
+    }
