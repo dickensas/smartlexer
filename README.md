@@ -124,10 +124,11 @@ Then execute bellow task to start the application window
 
 ## Usage Node.js
 
-     node smartlexer.js <source file>
+     node smartlexer.js <source file> <listener javascript file> <database json file>
 
 ## Reference
-    [javascript.pegjs from PEG.js examples](https://github.com/pegjs/pegjs/blob/master/examples/javascript.pegjs)
+
+[javascript.pegjs from PEG.js examples](https://github.com/pegjs/pegjs/blob/master/examples/javascript.pegjs)
      
 ## License
 
