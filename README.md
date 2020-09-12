@@ -12,6 +12,20 @@ This application uses flow-parser, use the below command to install flow-parser
 npm install flow-parser --save`
 ```
 
+### PEG.js
+This application uses PEG.js for advanced parsing, use the below command to install PEG.js
+
+```
+npm install pegjs --save`
+```
+
+### Mustache
+This application uses Mustache for advanced parsing, use the below command to install Mustache
+
+```
+npm install mustache --save`
+```
+
 ## Optional dependencies
 
 ### JavaFX
