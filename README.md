@@ -104,7 +104,7 @@ This file should be named as "database.json" and put in the root folder or passe
 - [x] 16  - Handlebars + PEG.js idea
 - [-] 17  - Python PEG.js Grammer (In Progress)
 
-## Usage GUI (Requires Java and JavaFX)
+## Usage GUI (Requires Java)
 The code is ready to execute
 
 If you have gradle in path, then invoke gradle as
