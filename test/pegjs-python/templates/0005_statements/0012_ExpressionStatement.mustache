@@ -1,0 +1,7 @@
+ExpressionStatement
+  = Indent? expression:Expression EOS {
+      return {
+        type: "ExpressionStatement",
+        expression: expression
+      };
+    }

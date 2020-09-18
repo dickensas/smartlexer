@@ -1,7 +1,7 @@
 MemberSequence
-  = head:MemberExpression tail:(__ "," __ MemberExpression)* {
+  = head:(MemberExpression / CASEBlock ) tail:(__ "," __ MemberSequence )* {
       return {
         type: "MemberSequence",
-        list: buildList(head, tail, 3)
+        list: buildSequenceList(head, tail, 3)
       };
     }

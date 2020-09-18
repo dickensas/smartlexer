@@ -9,20 +9,29 @@ module.exports.data = {
 		{"name":"GRANT"},
 		{"name":"NULL"},
 		{"name":"FROM"},
-		{"name":"WHERE"}
+		{"name":"WHERE"},
+		{"name":"AND"},
+		{"name":"OR"},
+		{"name":"ORDER"},
+		{"name":"GROUP"},
+		{"name":"HAVING"},
+		{"name":"BEGIN"},
+		{"name":"END"},
+		{"name":"CASE"},
+		{"name":"WHEN"},
+		{"name":"THEN"},
+		{"name":"ELSE"},
+		{"name":"AS"},
+		{"name":"BY"}
 	],
-	"tokenize": function () {
-        return function (text, render) {
-           return render(text)[0].toUpperCase() + 
-		         (render(text)+"Token").substr(1).padEnd(25," ") + 
-				 render("=") + 
-				 render(" \"" + text + "\"").padEnd(20," ");
-        }
+	"tokenize": function (text) {
+	   return text[0].toUpperCase() + 
+			 (text+"Token").substr(1).padEnd(25," ") + 
+			 "=" + 
+			 (" \"" + text + "\"i").padEnd(20," ");
     },
-	"tokenlist": function () {
-        return function (text, render) {
-           return render(text)[0].toUpperCase() + 
-		         (render(text)+"Token").substr(1);
-        }
+	"tokenlist": function (text) {
+	   return text[0].toUpperCase() + 
+			 (text+"Token").substr(1);
     }
 }

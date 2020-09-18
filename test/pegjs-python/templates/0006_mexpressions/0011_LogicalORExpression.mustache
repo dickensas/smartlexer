@@ -1,0 +1,4 @@
+LogicalORExpression
+  = head:LogicalANDExpression
+    tail:(__ LogicalOROperator __ LogicalANDExpression)*
+    { return buildLogicalExpression(head, tail); }

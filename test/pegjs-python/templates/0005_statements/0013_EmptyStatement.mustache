@@ -1,0 +1,15 @@
+EmptyStatement
+  = spaces:(" "+)? EOL i:Indent? {
+       console.log("..")
+       if(indentLevel!=0) {
+          indentLevel--;
+       }
+       console.log( indentLevel )
+       
+       return { 
+          type: "EmptyStatement",
+          intendLevel: indentLevel,
+          i: i,
+          spaces: spaces
+       }; 
+    }

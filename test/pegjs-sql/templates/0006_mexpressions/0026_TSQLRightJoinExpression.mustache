@@ -1,0 +1,14 @@
+TSQLRightJoinExpression
+  = left:LeftHandSideExpression __
+    operator:TSQLRightJoinOperator __
+    right:TSQLRightJoinExpression
+    {
+      return {
+        type: "TSQLRightJoinExpression",
+        operator: operator,
+        left: left,
+        right: right
+      };
+    }
+  / ConditionalExpression
+

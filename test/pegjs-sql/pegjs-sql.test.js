@@ -1,73 +1,26 @@
 const assert = require('chai').assert;
 const pegjs = require('pegjs');
-const mustache = require('mustache');
+const smartlexer = require('../../smartlexer.js');
 const fs = require("fs");
 const path = require("path")
 
 describe('PEG.js Grammer SQL', function () {
     it('Should parse SQL', function () {
-
-		var template = '';
-
-		//console.log(jsonData)
-		var jsonData = {};
-		var partials = {};
-		//, "expressions"
-		//var folders = ["charsets", "literals", "sequences", "midentifiers", "operators", "statements", "mexpressions"];
-		var sourseTemplatePath = path.join(__dirname, 'templates');
-		var folders = fs.readdirSync(sourseTemplatePath);
+		var dName = __dirname;
+		dName = dName.replace(/\\/g,"/")
 		
-		var inc = 0;
-		for(var x=0;x<folders.length;x++){
-			var directoryPath = path.join(__dirname, 'templates/' + folders[x]);
-			var label = folders[x].substr(5);
-			label = label[0].toUpperCase() + label.substr(1,label.length-2);
-
-			var files = fs.readdirSync(directoryPath);
-			files = files.filter(function(file) {
-			    return path.extname(file).toLowerCase() === ".mustache";
-			});
-			inc = 0;
-
-			for(var i=0; i<files.length;i++){
-				var file = files[i];
-				var localData = {};
-				try{
-					var _ldata = require("../../test/pegjs-sql/templates/"+ folders[x] + "/" + file + ".js");
-					if(_ldata.data) localData = _ldata.data;
-				}catch(ex){}
-				var content = fs.readFileSync("test/pegjs-sql/templates/" + folders[x] + "/" + file, 'utf8');
-				content = mustache.render(content, localData);
-				file = file.substr(0,file.indexOf("."));
-			    file = file.substr(5);
-			    //console.log(file);
-				partials[file] = content;
-				template = template + "\r\n{{> " + file + "}}\r\n";
-			}
-
-			for(var i in files){
-				var file = files[i];
-				if(file.toLowerCase().endsWith('.js')) continue
-//				var oldfile = file;
-				file = file.substr(0,file.indexOf("."));
-				file = file.substr(5);
-//				if(file.indexOf("_")==-1){
-//					console.log((inc+"").padStart(4,"0")+"_"+file)
-//					file = (inc+"").padStart(4,"0")+"_"+file;
-//					inc++;
-//					fs.renameSync("test/pegjs/templates/" + folders[x] + "/" +oldfile, "test/pegjs/templates/" + folders[x] + "/" + file);
-//				}
-				
-				if(i==0){
-					template = template + "\r\n" + label + "\r\n";
-					template = template + "  = " + file + "\r\n";
-				}else {
-					template = template + "  / " + file + "\r\n";
-				}
-			}
-		}
-
-		const grammer = mustache.render(template, jsonData, partials);
+		var sName = path.resolve('.')
+		sName = sName.replace(/\\/g,"/")
+		
+		dName = dName.substr(sName.length+1);
+		
+		const grammer = smartlexer.templateGenerate(__dirname, "templates",dName)
+		
+		//console.log(sName);
+		
+		//console.log(grammer);
+		
+//		const grammer = mustache.render(template, jsonData, partials);
 //		//console.log(grammer1);
 //		const grammer = fs.readFileSync('.settings/my.txt', 'utf8');
         //console.log(grammer);
@@ -77,6 +30,37 @@ describe('PEG.js Grammer SQL', function () {
 //		
 		var ast1 = parser.parse(sourceCode);
 		console.log(JSON.stringify(ast1));
+		
+		/*var targetSource = fs.readFileSync("test/pegjs-sql/aa.mustache", "utf8");
+		
+		ast1.isMemberExpression = function () {
+			console.log(this.name)
+	        return this.type === "MemberExpression";
+	    };
+	    
+	    ast1.isSELECTStatement = function () {
+	    	console.log(this.name)
+	        return this.type === "SELECTStatement";
+	    };
+	    
+	    ast1.isFROMExpression = function () {
+	    	console.log(this.name)
+	        return this.type === "FROMExpression";
+	    };
+	    
+	    ast1.isWHEREExpression = function () {
+	    	console.log(this.name)
+	        return this.type === "WHEREExpression";
+	    };
+	    
+	    ast1.isBinaryExpression = function () {
+	    	console.log(this.name)
+	        return this.type === "BinaryExpression";
+	    };
+		
+		targetSource =  mustache.render(targetSource, ast1);
+		
+		console.log(targetSource)*/
 
 		/*fs.readFile('test/pegjs/data/java.pegjs', 'utf8' , function(err1, grammer) {
 			if (err1) {

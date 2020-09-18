@@ -1,0 +1,7 @@
+TypeSequence
+  = head:Identifier tail:(__ "," __ TypeSequence)* {
+      return {
+        type: "TypeSequence",
+        list: buildList(head, tail, 0)
+      };
+    }

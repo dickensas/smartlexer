@@ -1,0 +1,10 @@
+FunctionDeclerationStatement
+  = Indent? DefToken __ id:CallExpression __ ":" EOL i:Indent body:StatementList Dedent {
+      return {
+        type: "FunctionDeclerationStatement",
+        i:i,
+        callee: id,
+        body: body
+      };
+    }
+

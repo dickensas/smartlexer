@@ -1,0 +1,14 @@
+UnaryExpression
+  = PostfixExpression
+  / operator:UnaryOperator __ argument:UnaryExpression {
+      var type = (operator === "++" || operator === "--")
+        ? "UpdateExpression"
+        : "UnaryExpression";
+
+      return {
+        type: type,
+        operator: operator,
+        argument: argument,
+        prefix: true
+      };
+    }

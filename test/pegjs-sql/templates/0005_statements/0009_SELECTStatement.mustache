@@ -1,10 +1,13 @@
 SELECTStatement
-  = SELECTToken __ fields:MemberSequence __ from:FROMExpression __ where:WHEREExpression __ EOS {
+  = id:SELECTToken __ fields:MemberSequence __ from:FROMExpression __ where:WHEREExpression? __ group:GROUPExpression? __ order:ORDERExpression? __ EOS {
       return {
         type: "SELECTStatement",
+        name:id[0],
         fields: fields,
         from: from,
-        where: where
+        where: where,
+        group: group,
+        order: order
       };
     }
 

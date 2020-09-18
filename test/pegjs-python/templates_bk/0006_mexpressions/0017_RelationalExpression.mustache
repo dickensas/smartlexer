@@ -1,0 +1,4 @@
+RelationalExpression
+  = head:ShiftExpression
+    tail:(__ RelationalOperator __ ShiftExpression)*
+    { return buildBinaryExpression(head, tail); }

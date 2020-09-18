@@ -28,7 +28,7 @@
   "homepage": "http://dickens.co.in/smart-lexer",
   "dependencies": {
     "flow-parser": "^0.132.0",
-    "mustache": "^4.0.1",
+    "handlebars": "^4.7.6",
     "pegjs": "^0.10.0"
   },
   "devDependencies": {

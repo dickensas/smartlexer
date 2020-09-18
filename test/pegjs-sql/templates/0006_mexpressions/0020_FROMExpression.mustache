@@ -1,7 +1,8 @@
 FROMExpression
-  = FROMToken __ tables:TableSequence {
+  = id:FROMToken __ tables:TableSequence {
       return {
         type: "FROMExpression",
+        name:id[0],
         tables: tables
       };
     }

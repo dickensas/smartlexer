@@ -1,0 +1,13 @@
+CASEBlock
+  =  id:CASEToken __ when:WHENToken __ condition:ConditionalExpression __ then:THENToken __ body:(StatementList __) __ end:ENDToken {
+      return {
+        type: "CASEBlock",
+        name: id[0],
+        when: when[0],
+        condition: condition,
+        then: then[0],
+        body: optionalList(extractOptional(body, 0)),
+        end: end[0]
+      };
+    }
+

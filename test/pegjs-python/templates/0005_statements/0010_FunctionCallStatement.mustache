@@ -1,0 +1,9 @@
+FunctionCallStatement
+  = Indent? id:CallExpression {
+      return {
+        type: "FunctionCallStatement",
+		args: id.args,
+		callee: id.callee
+      };
+    }
+

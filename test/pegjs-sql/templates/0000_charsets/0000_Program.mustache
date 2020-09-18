@@ -2,10 +2,7 @@
 // ============
 
 {
-  var TYPES_TO_PROPERTY_NAMES = {
-    CallExpression:   "callee",
-    MemberExpression: "object",
-  };
+  var tables = []
 
   function filledArray(count, value) {
     return Array.apply(null, new Array(count))
@@ -21,19 +18,56 @@
         return element[index]; 
     });
   }
-
+  
+  function traverse(x){
+    var arr = [];
+    if(x.constructor === Array){
+        for(var i=0;i<x.length;i++){
+            if(x[i].type === "MemberSequence"){
+                var larr = traverse(x[i].list)
+                for(var j=0;j<larr.length;j++){
+                    arr.push(larr[j]);
+                }
+            }else{
+                arr.push(x[i])
+            }
+        }
+    }
+    return arr;
+  }
+  
+  function extractSequenceList(list, index) {
+    return list.map(function(element) {
+        if(element[index].list){
+            element[index].list = traverse( element[index].list );
+        }
+        return element[index]; 
+    });
+  }
+  
+  function buildSequenceList(head, tail, index) {
+    var _x = extractSequenceList(tail, index);
+    if(_x.length>0 && _x[0].list){
+        return [head].concat(_x[0].list);
+    }
+    return [head].concat(_x);
+  }
+  
   function buildList(head, tail, index) {
     return [head].concat(extractList(tail, index));
   }
   
   function buildTableList(head, tail, alias, index) {
     if(alias!=null)
-    head.alias = alias.name;
+        head.alias = alias.name;
+    
     head.type = "Table"
+    tables.push(head)
+    
     if(tail[0])
-    return [head].concat(tail[0][3].list);
+        return [head].concat(tail[0][3].list);
     else
-    return [head];
+        return [head];
   }
 
   function buildBinaryExpression(head, tail) {

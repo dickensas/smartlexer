@@ -1,0 +1,8 @@
+GROUPExpression
+  = GROUPToken __ BYToken __ fields:MemberSequence  {
+      return {
+        type: "GROUPExpression",
+        fields:fields
+      };
+    }
+

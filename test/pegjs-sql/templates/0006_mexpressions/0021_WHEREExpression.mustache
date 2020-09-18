@@ -1,10 +1,9 @@
 WHEREExpression
-  = WHEREToken __ left:MemberExpression __ operator:InnerJoinOperator __ right:MemberExpression  {
+  = id:WHEREToken __ conditions:ConditionSequence  {
       return {
         type: "WHEREExpression",
-        left:left,
-        operator:operator,
-        right:right
+        conditions:conditions,
+        name: id[0]
       };
     }
 
