@@ -94,14 +94,15 @@ This file should be named as "database.json" and put in the root folder or passe
 - [x] 7 - Emit functions to the developer for custom code
 - [ ] 8 - Advanced intent beautifier
 - [ ] 9 - EXCEL/CSV as template data source
-- [ ] 10  - Test programming languages like Java, Kotlin, C... etc.,
+- [-] 10  - Test programming languages like Java, Kotlin, C... etc.,
 - [ ] 10  - XML transform facility
 - [ ] 11  - Lex path detection and replace strategy
 - [x] 12  - Node.js command line support
 - [x] 13  - Parse Simple C++ without missing any tokens
 - [x] 14  - PEG.js Testing
 - [x] 15  - Mocha Testing
-- [x] 16  - Mustache + PEG.js idea
+- [x] 16  - Handlebars + PEG.js idea
+- [-] 17  - Python PEG.js Grammer (In Progress)
 
 ## Usage GUI (Requires Java and JavaFX)
 The code is ready to execute
