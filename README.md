@@ -19,21 +19,18 @@ This application uses PEG.js for advanced parsing, use the below command to inst
 npm install pegjs --save`
 ```
 
-### Mustache
-This application uses Mustache for advanced parsing, use the below command to install Mustache
+### Handlebars
+This application uses Handlebars for advanced parsing, use the below command to install Handlebars
 
 ```
-npm install mustache --save`
+npm install handlebars --save`
 ```
 
 ## Optional dependencies
 
 ### JavaFX
 Only required for running in GUI<br/>
-Download JavaFX from [JavaFX SDK](https://gluonhq.com/products/javafx/)<br/>
-Change the `build.gradle.kts` accordingly
-
-`"--module-path=C:\\MyFiles\\javafx-sdk-11.0.2\\lib"`
+Automatically gets downloaded into local folder, no need to download and install JavaFX.
 
  
 ## Example Use Case (SQL)

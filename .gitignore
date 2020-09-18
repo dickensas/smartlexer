@@ -28,3 +28,4 @@ gradle-app.setting
 /source2.sql
 /lib/
 /.jshintrc
+/fxlib/

@@ -22,6 +22,8 @@ if (currentOS.isWindows()) {
 
 val avatarJs by configurations.creating
 
+val openjfx by configurations.creating
+
 dependencies {
     implementation("com.google.guava:guava:29.0-jre")
     
@@ -29,7 +31,16 @@ dependencies {
     implementation("org.openjfx:javafx-graphics:14:${platform}")
     implementation("org.openjfx:javafx-controls:14:${platform}")
     implementation("org.openjfx:javafx-fxml:14:${platform}")
+    implementation("org.openjfx:javafx-media:14:${platform}")
     implementation("org.openjfx:javafx-web:14:${platform}")
+    
+    openjfx("org.openjfx:javafx-base:14:${platform}")
+    openjfx("org.openjfx:javafx-graphics:14:${platform}")
+    openjfx("org.openjfx:javafx-controls:14:${platform}")
+    openjfx("org.openjfx:javafx-fxml:14:${platform}")
+    openjfx("org.openjfx:javafx-media:14:${platform}")
+    openjfx("org.openjfx:javafx-web:14:${platform}")
+    
     avatarJs("com.oracle:avatar-js:0.10.25-SNAPSHOT")
     avatarJs("com.oracle:libavatar-js-${platform}-x64:0.10.25-SNAPSHOT")
 
@@ -38,9 +49,14 @@ dependencies {
 application {
     mainClassName = "com.zigma.App"
     applicationDefaultJvmArgs = listOf(
-        "--module-path=C:\\MyFiles\\javafx-sdk-11.0.2\\lib",
+        "--module-path=fxlib",
         "--add-modules=javafx.controls,javafx.fxml,javafx.web"
     )
+}
+
+tasks.withType<JavaExec> {
+    main  = "com.zigma.App"
+    dependsOn("copyFXLibs")
 }
 
 tasks {
@@ -63,5 +79,10 @@ tasks {
         from(avatarJs)
         into("lib")
         rename("libavatar-js-win-x64-0.10.25-SNAPSHOT.dll", "avatar-js.dll")
+    }
+    
+    register("copyFXLibs", Copy::class) {
+        from(openjfx)
+        into("fxlib")
     }
 }
