@@ -1,6 +1,6 @@
 plugins {
     java
-
+    id("org.jetbrains.kotlin.jvm") version "1.3.72"
     application
 }
 
@@ -25,6 +25,9 @@ val avatarJs by configurations.creating
 val openjfx by configurations.creating
 
 dependencies {
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.google.guava:guava:29.0-jre")
     
     implementation("org.openjfx:javafx-base:14:${platform}")
