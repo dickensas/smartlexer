@@ -5,6 +5,7 @@ module.exports.data = {
 		{"name":"and"},
 		{"name":"or"},
 		{"name":"not"},
+		{"name":"class"},
 		{"name":"is"}
 	],
 	"tokenize": function (text) {

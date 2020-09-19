@@ -1,0 +1,10 @@
+FunctionDeclerationStatement
+  = DefToken __ callee:Identifier __ "(" __ args:(ArgumentList __)? ")" __ ":" __ EOL? __ "{" __ body:(StatementList __)? "}" {
+      return {
+        type: "FunctionDeclerationStatement",
+        callee: callee,
+        args: args,
+        body: body
+      };
+    }
+

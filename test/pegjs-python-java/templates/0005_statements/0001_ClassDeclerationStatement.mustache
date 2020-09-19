@@ -1,0 +1,9 @@
+ClassDeclerationStatement
+  = ClassToken __ id:Identifier __ ":" __ EOL? __ "{" __ body:(StatementList __)? "}" {
+      return {
+        type: "ClassDeclerationStatement",
+        id: id,
+        body: body
+      };
+    }
+

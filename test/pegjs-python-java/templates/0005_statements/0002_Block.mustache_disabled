@@ -1,0 +1,6 @@
+Block
+  = Indent {
+      return {
+        type: "BlockStatement"
+      };
+    }
