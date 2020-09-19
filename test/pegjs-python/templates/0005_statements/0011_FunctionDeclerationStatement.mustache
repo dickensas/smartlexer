@@ -1,9 +1,9 @@
 FunctionDeclerationStatement
-  = Indent? DefToken __ id:CallExpression __ ":" EOL i:Indent body:StatementList Dedent {
+  = DefToken __ callee:Identifier __ "(" __ args:(ArgumentList __)? ")" __ ":" __ EOL? __ "{" __ body:(StatementList __)? "}" {
       return {
         type: "FunctionDeclerationStatement",
-        i:i,
-        callee: id,
+        callee: callee,
+        args: args,
         body: body
       };
     }

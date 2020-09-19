@@ -1,8 +1,0 @@
-AssignmentStatement
-  = i:Indent? __ id:Identifier __ "=" __ assign:AssignmentExpression {
-      return {
-        type: "AssignmentStatement",
-        assign: assign
-      };
-    }
-

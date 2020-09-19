@@ -1,28 +1,31 @@
-class Person:
+class Person:  
            
-  def __init__(self, name, age):
-    self.name = name
-    
-    self.age = age
+  def __init__(self, name, age):  
+    self4.name = name
+    self1.age = age
+  def hello(self2):
+    spring("hello")
+  class Person2:  
+    def hello():
+      print("aa")
+p1 = Person("John", 36)  
 
-p1 = Person("John", 36)
-
-print(p1.name)
-print(p1.age)
+print(p2.name)  
+print(p3.age)  
 
 def my_function():
-  print("Hello from a function")
+  print("Hello from a function")  
           
-  print("---")
+  print("---")  
 
            
 
 
-def my_function1():
-  print("Hello from a function1")
+def my_function1():  
+  print("Hello from a function1")   
           
-  print("---1")
+  print("---1")  
 
 
-my_function()
-my_function1()
+my_function("1")  
+my_function1()  

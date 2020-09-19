@@ -26,9 +26,119 @@ describe('PEG.js Grammer Python', function () {
         //console.log(grammer);
 		var parser = pegjs.generate(grammer);
 //		
-		const sourceCode = fs.readFileSync("test/pegjs-python/src/test1.py", "utf8");
+		const sourceCode = fs.readFileSync("test/pegjs-python/src/test1.py", "utf8")
+		
+		function countSpace(current){
+			var spaceCount = 0;
+			for(var i=0;i<current.length;i++){
+				if(current[i] === ' ') spaceCount++
+				else if(current[i] === '\t') spaceCount+=2
+				else break
+			}
+			return spaceCount
+		}
+		
+		function startsWith(str, key){
+			if(str.indexOf(key)==-1) return false
+			
+			var firstIndex = str.indexOf(key)
+			
+			var chars = 0
+			var tabs = 0
+			var index = 0
+			for(var i=0;i<firstIndex;i++){
+				if(str[i] === ' ') chars++
+				else if(str[i] === '\t') tabs++
+				else return false
+				index++
+			}
+			
+			return {
+				chars: chars,
+				index: index,
+				tabs: tabs,
+				key: key
+			}
+		}
+		
+		var numOpens = 0;
+		
+		function openBracket(current, key){
+			var _class = startsWith(current, key)
+			if(_class.constructor === Object){
+				var colonIndex = current.indexOf(":")
+				if(colonIndex!=-1){
+					if(current.length>colonIndex+1){
+						current = current.substr(0,colonIndex+1) + "{" + current.substr(colonIndex+1)
+						numOpens++
+					}else{
+						current = current + "{"
+						numOpens++
+					}
+				}
+			}
+			//console.log(current)
+			return current
+		}
 //		
-		var ast1 = parser.parse(sourceCode);
+		var prevSpace = 0;
+		const sourceArray = sourceCode.split("\n")
+		for(var i=0;i<sourceArray.length;i++) {
+			var current = sourceArray[i]
+			
+			var _current = current;
+			_current = _current.replace(/\s/ig,"")
+			_current = _current.replace(/\t/ig,"")
+			if(_current.length>0) {
+				var spaces = countSpace(current);
+				//console.log((_current.length>0) + "  " + spaces + "  " + prevSpace + " " + numOpens + " " + current )
+				if(spaces<prevSpace && numOpens>0){
+					var prevIndent = prevSpace/2
+					var curIndent = spaces/2
+					//console.log("prevIndent: " + prevIndent)
+					//console.log("curIndent: " + curIndent)
+					var x = prevIndent;
+					while(x>curIndent && numOpens>=0){
+						
+						//console.log(sourceArray[i-1])
+						console.log(numOpens)
+						sourceArray[i-1] = sourceArray[i-1] +  "\n" + (numOpens==0?"": (" ".padStart(curIndent*2))) + "}"
+						x--
+						numOpens--
+					}
+				}
+				else if(spaces==0 && numOpens>0){
+					while(numOpens>0){
+						sourceArray[i-1]= sourceArray[i-1] +  "\n" + (numOpens==0?"": (" ".padStart(curIndent*2))) + "}"
+						numOpens--
+					}
+				}
+				
+				current = openBracket(current, "class ");
+				current = openBracket(current, "def ");
+				
+				sourceArray[i] = current;
+				prevSpace = spaces
+			}
+			//console.log(sourceArray[i])
+		}
+		
+		
+		
+		for(var i=0;i<sourceArray.length;i++) {
+			//console.log(sourceArray[i])
+		}
+		
+		var newSourceCode = sourceArray.join("\n")
+		
+		while(numOpens>0){
+			newSourceCode = newSourceCode + "}"
+			numOpens--
+		}
+		
+		console.log(newSourceCode)
+		console.log("generating AST")
+		var ast1 = parser.parse(newSourceCode);
 		console.log(JSON.stringify(ast1));
 		
 		/*var targetSource = fs.readFileSync("test/pegjs-sql/aa.mustache", "utf8");

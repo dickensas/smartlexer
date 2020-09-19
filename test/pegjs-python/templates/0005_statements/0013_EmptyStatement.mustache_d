@@ -1,0 +1,11 @@
+EmptyStatement
+  = (" "+)? EOL i:Indent? {
+       if(indentLevel!=0) {
+          indentLevel--;
+       }
+       
+       return { 
+          type: "EmptyStatement",
+          i: i
+       }; 
+    }
