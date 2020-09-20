@@ -1,5 +1,5 @@
 DisplayStatement
-  = SevenSpace id:((Spaces? Identifier) / (Spaces? Literal) / (Spaces? HyphenIdentifier) ) EOS? {
+  = (SevenSpace / AreaA) id:(Identifier / Literal / HyphenIdentifier ) EOS? {
       return {
         type: "DisplayStatement",
         id: id
