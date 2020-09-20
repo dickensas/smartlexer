@@ -1,0 +1,4 @@
+EqualityExpression
+  = head:RelationalExpression
+    tail:(__ EqualityOperator __ RelationalExpression)*
+    { return buildBinaryExpression(head, tail); }

@@ -1,0 +1,8 @@
+HyphenVariable
+  = SevenSpace id1:HyphenIdentifier {
+      return {
+        type: "HyphenVariable",
+        name: id1
+      };
+    }
+

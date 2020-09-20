@@ -1,0 +1,8 @@
+DisplayStatement
+  = SevenSpace id:((Spaces? Identifier) / (Spaces? Literal) / (Spaces? HyphenIdentifier) ) EOS? {
+      return {
+        type: "DisplayStatement",
+        id: id
+      };
+    }
+

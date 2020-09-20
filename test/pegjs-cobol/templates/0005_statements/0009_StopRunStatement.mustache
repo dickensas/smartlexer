@@ -1,0 +1,8 @@
+StopRunStatement
+  = SevenSpace id1:StopToken Spaces? id2:RunToken EOS? {
+      return {
+        type: "StopRunStatement",
+        name: id1[0]
+      };
+    }
+

@@ -1,0 +1,8 @@
+IndentedDisplayStatement
+  = SevenSpace !SingleSpace id:Literal EOS? {
+      return {
+        type: "IndentedDisplayStatement",
+        id: id
+      };
+    }
+

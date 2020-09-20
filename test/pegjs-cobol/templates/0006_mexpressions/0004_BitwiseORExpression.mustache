@@ -1,0 +1,4 @@
+BitwiseORExpression
+  = head:BitwiseXORExpression
+    tail:(__ BitwiseOROperator __ BitwiseXORExpression)*
+    { return buildBinaryExpression(head, tail); }

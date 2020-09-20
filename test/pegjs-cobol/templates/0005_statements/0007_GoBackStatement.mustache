@@ -1,0 +1,8 @@
+GoBackStatement
+  = SevenSpace id1:GobackToken EOS? {
+      return {
+        type: "GoBackStatement",
+        name: id1[0]
+      };
+    }
+

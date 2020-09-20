@@ -1,0 +1,7 @@
+CommentStatement
+  = SixSpace "*" (!EOS .)* {
+      return {
+        type: "CommentStatement"
+      };
+    }
+  

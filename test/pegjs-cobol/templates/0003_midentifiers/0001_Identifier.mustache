@@ -1,0 +1,29 @@
+FutureReservedWord
+  = ProgramIdToken
+
+ReservedWord
+  = Keyword
+  / FutureReservedWord
+
+Identifier
+  = !ReservedWord  name:IdentifierName { return name; }
+
+IdentifierName "identifier"
+  = head:IdentifierStart tail:IdentifierPart* {
+      return {
+        type: "Identifier",
+        name: head + tail.join("")
+      };
+    }
+
+IdentifierStart
+  = UnicodeLetter
+  / "\\" sequence:UnicodeEscapeSequence { return sequence; }
+
+IdentifierPart
+  = IdentifierStart
+  / UnicodeCombiningMark
+  / UnicodeDigit
+  / UnicodeConnectorPunctuation
+  / "\u200C"
+  / "\u200D"

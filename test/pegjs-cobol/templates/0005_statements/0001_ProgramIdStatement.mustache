@@ -1,0 +1,9 @@
+ProgramIdStatement
+  = SevenSpace id1:ProgramIdToken Spaces? id:Identifier EOS? {
+      return {
+        type: "ProgramIdStatement",
+        name: id1[0]+ id1[1] + id1[2],
+        id: id
+      };
+    }
+

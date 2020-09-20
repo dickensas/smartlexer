@@ -1,5 +1,5 @@
 ExpressionStatement
-  = expression:Expression __ EOS? {
+  = expression:Expression {
       return {
         type: "ExpressionStatement",
         expression: expression

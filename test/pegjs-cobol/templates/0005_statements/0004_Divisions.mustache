@@ -1,0 +1,15 @@
+Divisions
+{{#each tokens}}
+ {{#if (isFirst @index)}}={{else}}/{{/if}} {{statementize this}}
+{{/each}}
+
+{{#each tokens}}
+{{statementize this}}
+ = SevenSpace {{{makeRule this}}} {
+      return {
+        type: "{{{statementize this}}}",
+        name: id1[0] + " division"
+      };
+    }
+
+{{/each}}

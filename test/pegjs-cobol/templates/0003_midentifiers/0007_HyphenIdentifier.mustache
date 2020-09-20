@@ -1,0 +1,8 @@
+HyphenIdentifier
+  =  id1:Identifier tail:("-" Identifier)+ {
+      return {
+        type: "HyphenIdentifier",
+        name: id1,
+        tail: tail
+      };
+    }

@@ -1,5 +1,5 @@
 ClassDeclerationStatement
-  = ClassToken __ id:Identifier __ ":" __ EOL? __ "{" __ body:(StatementList __)? "}" {
+  = ClassToken __ id:Identifier __ ":" __ "{" __ body:(StatementList __)? "}" {
       return {
         type: "ClassDeclerationStatement",
         id: id,

@@ -1,7 +1,8 @@
 FunctionDeclerationStatement
-  = DefToken __ callee:Identifier __ "(" __ args:(ArgumentList __)? ")" __ ":" __ EOL? __ "{" __ body:(StatementList __)? "}" {
+  = id1:DefToken __ callee:Identifier __ "(" __ args:(ArgumentList __)? ")" __ ":" __ "{" __ body:(StatementList __)? "}" {
       return {
         type: "FunctionDeclerationStatement",
+        name: id1[0],
         callee: callee,
         args: args,
         body: body

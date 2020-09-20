@@ -1,0 +1,14 @@
+TableSequence
+  = table:Identifier __ alias:Identifier tail:(__ "," __ TableSequence)* {
+      return {
+        type: "TableSequence",
+        list: buildTableList(table, tail, alias, 3)
+      };
+    }
+  /
+    table:Identifier tail:(__ "," __ TableSequence)* {
+      return {
+        type: "TableSequence",
+        list: buildTableList(table, tail, null, 3)
+      };
+    }

@@ -1,0 +1,8 @@
+CallExpression
+  = callee:Identifier __ args:Arguments {
+      return {
+        type: "CallExpression",
+		callee: callee,
+		args: args
+      };
+    }

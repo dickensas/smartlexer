@@ -3,6 +3,7 @@ const pegjs = require('pegjs');
 const smartlexer = require('../../smartlexer.js');
 const fs = require("fs");
 const path = require("path")
+const handlebars = require('handlebars');
 
 describe('PEG.js Grammer Python To Java', function () {
     it('Should parse Python and Covert to Java', function () {
@@ -101,7 +102,7 @@ describe('PEG.js Grammer Python To Java', function () {
 					while(x>curIndent && numOpens>=0){
 						
 						//console.log(sourceArray[i-1])
-						console.log(numOpens)
+						//console.log(numOpens)
 						sourceArray[i-1] = sourceArray[i-1] +  "\n" + (numOpens==0?"": (" ".padStart(curIndent*2))) + "}"
 						x--
 						numOpens--
@@ -136,14 +137,19 @@ describe('PEG.js Grammer Python To Java', function () {
 			numOpens--
 		}
 		
-		console.log(newSourceCode)
-		console.log("generating AST")
+		//console.log(newSourceCode)
+		//console.log("generating AST")
 		var ast1 = parser.parse(newSourceCode);
 		console.log(JSON.stringify(ast1));
 		
-		/*var targetSource = fs.readFileSync("test/pegjs-sql/aa.mustache", "utf8");
+	    var targetSource = fs.readFileSync("test/pegjs-python-java/java-tamplates/0000_ClassTemplate.mustache", "utf8");
 		
-		ast1.isMemberExpression = function () {
+	    const _content = handlebars.compile(targetSource);
+		var newContent = _content(ast1);
+		
+		console.log(newContent)
+	    
+		/*ast1.isMemberExpression = function () {
 			console.log(this.name)
 	        return this.type === "MemberExpression";
 	    };

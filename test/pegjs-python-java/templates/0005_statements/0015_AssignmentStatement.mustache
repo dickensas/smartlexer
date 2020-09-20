@@ -1,5 +1,5 @@
 AssignmentStatement
-  = id:AssignmentExpression __ EOS? {
+  = id:AssignmentExpression {
       return {
         type: "AssignmentStatement",
         right: id.right

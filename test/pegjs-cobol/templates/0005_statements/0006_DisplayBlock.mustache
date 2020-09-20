@@ -1,0 +1,8 @@
+DisplayBlock
+  = (SevenSpace id1:DisplayToken EOS?) body:(StatementList)? (SevenSpace EndDisplayToken EOS?) {
+      return {
+        type: "DisplayBlock",
+        body: body[0]
+      };
+    }
+
