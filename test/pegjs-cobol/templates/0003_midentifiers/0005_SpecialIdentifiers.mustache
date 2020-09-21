@@ -1,0 +1,9 @@
+SpecialIdentifiers
+{{#each tokens}}
+ {{#if (isFirst @index)}}={{else}}/{{/if}} {{makeToken this}}
+{{/each}}
+
+{{#each tokens}}
+{{makeToken this}}
+ = "{{{this}}}"i EOS?
+{{/each}}

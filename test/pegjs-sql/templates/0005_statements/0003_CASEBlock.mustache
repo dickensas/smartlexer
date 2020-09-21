@@ -10,4 +10,16 @@ CASEBlock
         end: end[0]
       };
     }
-
+  /
+    alias:Identifier __ "=" __ id:CASEToken __ when:WHENToken __ condition:ConditionalExpression __ then:THENToken __ body:(StatementList __) __ end:ENDToken {
+      return {
+        type: "CASEBlock",
+        name: id[0],
+        alias, alias,
+        when: when[0],
+        condition: condition,
+        then: then[0],
+        body: optionalList(extractOptional(body, 0)),
+        end: end[0]
+      };
+    }

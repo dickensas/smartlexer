@@ -2,6 +2,10 @@ module.exports.data = {
 	"tokens": [
 		"input-output section",
 		"working-storage section",
+		"local-storage section",
+		"configuration section",
+		"linkage section",
+		"file section"
 	],
 	"statementize": function (text) {
 	   var arr = text.split(" ")

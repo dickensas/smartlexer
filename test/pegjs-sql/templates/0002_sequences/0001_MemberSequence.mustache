@@ -1,5 +1,5 @@
 MemberSequence
-  = head:(MemberExpression / CASEBlock ) tail:(__ "," __ MemberSequence )* {
+  = head:(MemberExpression / ( c:CASEBlock __ as:ASToken? __ i:Identifier { if(as) c.as = as[0]; c.alias = i; return c; } ) / CASEBlock  ) tail:(__ "," __ MemberSequence )* {
       return {
         type: "MemberSequence",
         list: buildSequenceList(head, tail, 3)

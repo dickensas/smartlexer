@@ -1,0 +1,8 @@
+ThruExpression
+  = left:(HyphenIdentifier / Identifier / Literal) Spaces? ThruToken Spaces? right:(HyphenIdentifier / Identifier / Literal) {
+        return {
+            type: "ThruExpression",
+            left: left,
+            right: right
+        };
+    }

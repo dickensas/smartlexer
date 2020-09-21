@@ -1,10 +1,10 @@
-AreaA
+AreaA "correct AreaA column"
 {{#each tokens}}
  {{#if (isFirst @index)}}={{else}}/{{/if}} {{titleCase name}}Space
 {{/each}}
 
 {{#each tokens}}
-{{titleCase name}}Space "correct {{name}} column"
+{{titleCase name}}Space
  = spaces:" "* &{ return spaces.length === {{column}}; }
 
 {{/each}}

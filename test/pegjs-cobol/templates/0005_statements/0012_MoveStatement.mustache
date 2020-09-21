@@ -1,0 +1,9 @@
+MoveStatement
+  = (SevenSpace / AreaA / AreaB) MoveToken Spaces? from:(Literal / Identifier / HyphenIdentifier) Spaces? ToToken Spaces? to:(HyphenIdentifier / Identifier) EOS? {
+      return {
+        type: "MoveStatement",
+        from: from,
+        to: to
+      };
+    }
+

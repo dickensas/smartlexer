@@ -22,6 +22,10 @@ module.exports.data = {
 		{"name":"THEN"},
 		{"name":"ELSE"},
 		{"name":"AS"},
+		{"name":"IS"},
+		{"name":"IN"},
+		{"name":"EXISTS"},
+		{"name":"LIKE"},
 		{"name":"BY"}
 	],
 	"tokenize": function (text) {

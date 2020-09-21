@@ -1,0 +1,8 @@
+UntilExpression
+  = UntilToken Spaces? left:(HyphenIdentifier / Identifier / Literal) Spaces? EqualityOperator right:(HyphenIdentifier / Identifier / Literal) {
+      return {
+          type: "UntilExpression",
+          left: left,
+          right: right
+      };
+    }

@@ -1,0 +1,25 @@
+PerformBlock
+  = id:(SevenSpace id1:PerformToken Spaces? id2:ThruExpression? EOS? { return { expr: id2 }; } ) body:(StatementList)? (SevenSpace EndPerformToken EOS?) {
+      return {
+        type: "PerformBlock",
+        body: body,
+        id: id
+      };
+    }
+   /
+    id:(SevenSpace id1:PerformToken Spaces? id2:UntilExpression? EOS? { return { expr: id2 }; } ) body:(StatementList)? (SevenSpace EndPerformToken EOS?) {
+      return {
+        type: "PerformBlock",
+        body: body,
+        id: id
+      };
+    }
+   /
+    id:(SevenSpace id1:PerformToken Spaces? para:(HyphenIdentifier / Identifier) Spaces? id2:UntilExpression? EOS? { return { expr: id2, para: para }; } ) body:(StatementList)? (SevenSpace EndPerformToken EOS?) {
+      return {
+        type: "PerformBlock",
+        body: body,
+        id: id
+      };
+    }
+

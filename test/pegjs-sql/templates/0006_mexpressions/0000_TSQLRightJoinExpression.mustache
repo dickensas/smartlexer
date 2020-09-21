@@ -1,0 +1,45 @@
+TSQLRightJoinExpression
+  = left:LeftHandSideExpression __
+    operator:TSQLRightJoinOperator __
+    right:TSQLRightJoinExpression
+    {
+      if(right.type === 'MemberExpression' && left.type ==='MemberExpression' ){
+        var joinFound = false
+        for(var i=0;i<tables.length;i++){
+            if(left.object.name === tables[i].alias) {
+                for(var j=0;j<tables.length;j++){
+                    if(right.object.name === tables[j].alias) {
+                        tables[i].join = [left.object.name,left.property.name,right.object.name, right.property.name]
+                        tables[i].direction = "RIGHT"
+                        joinFound = true
+                        return
+                    }
+                }
+            }
+        }
+        
+        if(joinFound === false) {
+            for(var i=0;i<tables.length;i++){
+                if(right.object.name === tables[i].alias) {
+                    for(var j=0;j<tables.length;j++){
+                        if(left.object.name === tables[j].alias) {
+                            tables[i].join = [right.object.name,right.property.name,left.object.name, left.property.name]
+                            tables[i].direction = "RIGHT"
+                            joinFound = true
+                            return
+                        }
+                    }
+                }
+            }
+        }
+      }
+      
+      return {
+        type: "TSQLRightJoinExpression",
+        operator: operator,
+        left: left,
+        right: right
+      };
+    }
+  / ConditionalExpression
+
