@@ -1,0 +1,8 @@
+UnionSequence
+  = head:UNIONToken __ all:ALLToken? __ tail:(__ EOS? __ SELECTStatement __ EOS? / EOF? __ UnionSequence)* {
+      return {
+        type: "UnionSequence",
+        all: all,
+        list: buildUnionList(head, tail, 3)
+      };
+    }

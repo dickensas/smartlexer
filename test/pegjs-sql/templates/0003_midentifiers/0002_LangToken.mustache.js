@@ -26,6 +26,8 @@ module.exports.data = {
 		{"name":"IN"},
 		{"name":"EXISTS"},
 		{"name":"LIKE"},
+		{"name":"UNION"},
+		{"name":"ALL"},
 		{"name":"BY"}
 	],
 	"tokenize": function (text) {

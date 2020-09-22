@@ -2,7 +2,7 @@
 // ============
 
 {
-  var tables = []
+  var tables = new Array()
 
   function filledArray(count, value) {
     return Array.apply(null, new Array(count))
@@ -23,7 +23,17 @@
     var arr = [];
     if(x.constructor === Array){
         for(var i=0;i<x.length;i++){
+            if(!x[i]) {
+                console.log(x)
+                continue;
+            }
             if(x[i].type === "MemberSequence"){
+                var larr = traverse(x[i].list)
+                for(var j=0;j<larr.length;j++){
+                    arr.push(larr[j]);
+                }
+            }else if(x[i].type === "ConditionSequence"){
+                console.log(x[i].list)
                 var larr = traverse(x[i].list)
                 for(var j=0;j<larr.length;j++){
                     arr.push(larr[j]);
@@ -54,6 +64,11 @@
   }
   
   function buildList(head, tail, index) {
+    return [head].concat(extractList(tail, index));
+  }
+  
+  function buildUnionList(head, tail, index) {
+    if(tail.constructor == Array && tail[0].constructor == Array && tail[0].length==1) tail = tail[0]
     return [head].concat(extractList(tail, index));
   }
   

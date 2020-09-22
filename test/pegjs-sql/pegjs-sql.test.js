@@ -3,6 +3,7 @@ const pegjs = require('pegjs');
 const smartlexer = require('../../smartlexer.js');
 const fs = require("fs");
 const path = require("path")
+var beautify = require("json-beautify");
 
 describe('PEG.js Grammer SQL', function () {
     it('Should parse SQL', function () {
@@ -29,7 +30,7 @@ describe('PEG.js Grammer SQL', function () {
 		const sourceCode = fs.readFileSync("test/pegjs-sql/src/test1.sql", "utf8");
 //		
 		var ast1 = parser.parse(sourceCode);
-		console.log(JSON.stringify(ast1));
+		console.log(beautify(ast1, null, 2, 80));
 		
 		/*var targetSource = fs.readFileSync("test/pegjs-sql/aa.mustache", "utf8");
 		
