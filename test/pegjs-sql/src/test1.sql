@@ -18,6 +18,7 @@ SELECT 'm2' = a.x, a.y,
     b.v
 FROM vmployee e ,   department   d   ,     profile p2
 where p2.x1 =* e.m2 AND p.x = 20 AND e.x5 = d.x8 OR e.x = 901 OR e.x IS NULL
+OR e.x IN (SELECT e from emp) AND x = 777
 UNION
 SELECT 'm3' = a.x, a.y,
     CASE

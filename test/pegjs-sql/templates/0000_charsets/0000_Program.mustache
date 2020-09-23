@@ -21,7 +21,7 @@
   
   function traverse(x){
     var arr = [];
-    if(x.constructor === Array){
+    if(x && x.constructor === Array){
         for(var i=0;i<x.length;i++){
             if(!x[i]) {
                 console.log(x)
@@ -68,7 +68,7 @@
   }
   
   function buildUnionList(head, tail, index) {
-    if(tail.constructor == Array && tail[0].constructor == Array && tail[0].length==1) tail = tail[0]
+    if(tail && tail.constructor == Array && tail[0] && tail[0].constructor == Array && tail[0].length==1) tail = tail[0]
     return [head].concat(extractList(tail, index));
   }
   

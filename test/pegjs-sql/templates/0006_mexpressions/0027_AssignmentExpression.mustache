@@ -137,5 +137,16 @@ AssignmentExpression
         right: right
       };
     }
+  / left:LeftHandSideExpression __
+    operator:RelationalOperator __
+    right:SubQueryExpression {
+      return {
+        type: "SubQueryExpression",
+        operator: operator,
+        left: left,
+        right: right
+      };
+    }
+
   / ConditionalExpression
 
