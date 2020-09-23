@@ -4,6 +4,17 @@ Initialiser
 AssignmentExpression
   = left:LeftHandSideExpression __
     "=" !"=" __
+    right:CallExpression
+    {
+      return {
+        type: "AssignmentExpression",
+        operator: "=",
+        left: left,
+        right: right
+      };
+    }
+  / left:LeftHandSideExpression __
+    "=" !"=" __
     right:AssignmentExpression
     {
       return {

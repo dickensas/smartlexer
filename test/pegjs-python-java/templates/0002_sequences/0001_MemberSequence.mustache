@@ -1,7 +1,0 @@
-MemberSequence
-  = head:(MemberExpression ) tail:(__ "," __ MemberSequence )* {
-      return {
-        type: "MemberSequence",
-        list: buildSequenceList(head, tail, 3)
-      };
-    }

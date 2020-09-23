@@ -2,6 +2,8 @@ AssignmentStatement
   = id:AssignmentExpression {
       return {
         type: "AssignmentStatement",
+        left: id.left,
+        operator: id.operator,
         right: id.right
       };
     }

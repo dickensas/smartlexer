@@ -141,8 +141,26 @@ describe('PEG.js Grammer Python To Java', function () {
 		//console.log("generating AST")
 		var ast1 = parser.parse(newSourceCode);
 		console.log(JSON.stringify(ast1));
+		var targetHelper = require("./java-tamplates/MainTemplate.mustache.js")
+	    var targetSource = fs.readFileSync("test/pegjs-python-java/java-tamplates/MainTemplate.mustache", "utf8");
+		for(var _p in targetHelper){
+			if(typeof targetHelper[_p] == "function"){
+				handlebars.registerHelper(_p,targetHelper[_p]);
+			}
+		}
 		
-	    var targetSource = fs.readFileSync("test/pegjs-python-java/java-tamplates/0000_ClassTemplate.mustache", "utf8");
+		var files = fs.readdirSync("test/pegjs-python-java/java-tamplates");
+		files = files.filter(function(file) {
+		    return path.extname(file).toLowerCase() === ".mustache" && file != "MainTemplate.mustache";
+		});
+		
+		for(var i=0; i<files.length;i++){
+			var file = files[i];
+			var label = file.substr(0,file.indexOf("."));
+			var content = fs.readFileSync("test/pegjs-python-java/java-tamplates/" + file, 'utf8');
+			const _content = handlebars.compile(content);
+			handlebars.registerPartial(label, _content)
+		}
 		
 	    const _content = handlebars.compile(targetSource);
 		var newContent = _content(ast1);

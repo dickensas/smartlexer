@@ -8,7 +8,8 @@ class Person:
   class Person2:  
     def hello():
       print("aa")
-p1 = Person("John", 36)  
+
+p1 = Person("John", 36)
 
 print(p2.name)  
 print(p3.age)  

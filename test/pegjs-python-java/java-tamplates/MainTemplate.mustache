@@ -1,0 +1,8 @@
+public class Main {
+   {{#each body}}
+   {{> (lookup . 'type') }}
+   {{/each}}
+   public static void main(String args[]) {
+      new Main();
+   }
+}

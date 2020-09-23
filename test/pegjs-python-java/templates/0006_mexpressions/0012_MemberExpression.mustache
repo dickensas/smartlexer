@@ -1,12 +1,8 @@
 MemberExpression
-  = falias:((Identifier/StringLiteral) __ "=" __)? head:(
+  = head:(
         PrimaryExpression
     )
     tail:(
-        __ "." __ property:IdentifierName __ alias:Identifier {
-          return { property: property, computed: false, alias: alias, as:as };
-        }
-        /
         __ "." __ property:IdentifierName {
           return { property: property, computed: false };
         }
@@ -16,13 +12,9 @@ MemberExpression
         return {
           type: "MemberExpression",
           object: result,
-          dtype: element.dtype,
           id: element.id,
           property: element.property,
           computed: element.computed,
-          as: element.as ? element.as[0] : null,
-          alias: element.alias,
-          falias: falias ? falias[0] : null
         };
       }, head);
     }

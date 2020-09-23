@@ -1,0 +1,11 @@
+
+public void {{{callee.name}}} ({{#each args}} {{#each this}} {{#if name}} {{name}} {{/if}} {{#if value}} {{value}} {{/if}}{{#if @last}}{{else}}, {{/if}} {{/each}} {{/each}}) {
+{{#each body}}
+{{#each this}}
+{{#if type}}
+{{> (lookup . 'type') }}
+{{/if}}
+{{/each}}
+  
+{{/each}}
+}

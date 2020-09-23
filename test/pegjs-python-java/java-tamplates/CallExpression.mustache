@@ -1,0 +1,1 @@
+{{#callee}}{{> (lookup . 'type') }}{{/callee}}({{#each args}}{{> (lookup . 'type') }}{{#if @last}}{{else}}, {{/if}}{{/each}})

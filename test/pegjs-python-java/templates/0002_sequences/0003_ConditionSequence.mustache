@@ -1,7 +1,0 @@
-ConditionSequence
-  = head:(TSQLRightJoinExpression / TSQLLeftJoinExpression) tail:(__ (AndToken / OrToken) __ ConditionSequence)* {
-      return {
-        type: "ConditionSequence",
-        list: buildList(head, tail, 0)
-      };
-    }
