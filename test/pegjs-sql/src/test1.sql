@@ -1,4 +1,7 @@
-SELECT 'm1' = a.x, a.y,
+SELECT 'm1' = a.x, 
+    x = UPPER(a.y),
+    ( SELECT x FROM t1 )
+    ,
     CASE
     WHEN Quantity > 30 THEN 
     'The quantity is greater than 30'
