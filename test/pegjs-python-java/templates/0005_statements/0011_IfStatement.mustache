@@ -1,0 +1,10 @@
+IfStatement
+  = id1:IfToken __ exp:(CallExpression / RelationalExpression) __ ":" __ "{" __ body:(StatementList __)? "}" {
+      return {
+        type: "IfStatement",
+        name: id1[0],
+        exp: exp,
+        body: body
+      };
+    }
+

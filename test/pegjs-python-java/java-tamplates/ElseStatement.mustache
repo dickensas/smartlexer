@@ -1,0 +1,10 @@
+else {
+{{#each body}}
+{{#each this}}
+{{#if type}}
+   {{> (lookup . 'type') }}
+{{/if}}
+{{/each}}
+  
+{{/each}}
+}

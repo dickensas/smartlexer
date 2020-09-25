@@ -1,0 +1,10 @@
+ElIfStatement
+  = id1:ElIfToken __ exp:(CallExpression / RelationalExpression) __ ":" __ "{" __ body:(StatementList __)? "}" {
+      return {
+        type: "ElIfStatement",
+        name: id1[0],
+        exp: exp,
+        body: body
+      };
+    }
+

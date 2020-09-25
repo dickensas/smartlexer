@@ -1,0 +1,10 @@
+if( {{#exp}}{{> (lookup . 'type') }}{{/exp}} ) {
+{{#each body}}
+{{#each this}}
+{{#if type}}
+   {{> (lookup . 'type') }}
+{{/if}}
+{{/each}}
+  
+{{/each}}
+}

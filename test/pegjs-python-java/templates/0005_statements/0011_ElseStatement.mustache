@@ -1,0 +1,9 @@
+ElseStatement
+  = id1:ElseToken __ ":" __ "{" __ body:(StatementList __)? "}" {
+      return {
+        type: "ElseStatement",
+        name: id1[0],
+        body: body
+      };
+    }
+

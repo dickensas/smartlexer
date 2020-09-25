@@ -3,9 +3,15 @@ module.exports.data = {
 		{"name":"def", "first":true},
 		{"name":"None"},
 		{"name":"and"},
+		{"name":"for"},
+		{"name":"while"},
+		{"name":"in"},
 		{"name":"or"},
 		{"name":"not"},
 		{"name":"class"},
+		{"name":"if"},
+		{"name":"elIf"},
+		{"name":"else"},
 		{"name":"is"}
 	],
 	"tokenize": function (text) {

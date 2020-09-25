@@ -3,6 +3,10 @@ MemberExpression
         PrimaryExpression
     )
     tail:(
+        __ "." __ property:CallExpression {
+          return { property: property, computed: false };
+        }
+        /
         __ "." __ property:IdentifierName {
           return { property: property, computed: false };
         }

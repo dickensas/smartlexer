@@ -1,0 +1,11 @@
+ForLoopStatement
+  = id1:ForToken __ v:Identifier __ InToken __ exp:(CallExpression / RelationalExpression) __ ":" __ "{" __ body:(StatementList __)? "}" {
+      return {
+        type: "ForLoopStatement",
+        name: id1[0],
+        v: v,
+        exp: exp,
+        body: body
+      };
+    }
+

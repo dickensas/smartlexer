@@ -117,6 +117,11 @@ describe('PEG.js Grammer Python To Java', function () {
 				
 				current = openBracket(current, "class ");
 				current = openBracket(current, "def ");
+				current = openBracket(current, "for ");
+				current = openBracket(current, "while ");
+				current = openBracket(current, "if ");
+				current = openBracket(current, "elif ");
+				current = openBracket(current, "else");
 				
 				sourceArray[i] = current;
 				prevSpace = spaces
@@ -140,7 +145,7 @@ describe('PEG.js Grammer Python To Java', function () {
 		//console.log(newSourceCode)
 		//console.log("generating AST")
 		var ast1 = parser.parse(newSourceCode);
-		console.log(JSON.stringify(ast1));
+		//console.log(JSON.stringify(ast1));
 		var targetHelper = require("./java-tamplates/MainTemplate.mustache.js")
 	    var targetSource = fs.readFileSync("test/pegjs-python-java/java-tamplates/MainTemplate.mustache", "utf8");
 		for(var _p in targetHelper){
@@ -164,7 +169,6 @@ describe('PEG.js Grammer Python To Java', function () {
 		
 	    const _content = handlebars.compile(targetSource);
 		var newContent = _content(ast1);
-		
 		console.log(newContent)
 	    
 		/*ast1.isMemberExpression = function () {

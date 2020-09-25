@@ -1,0 +1,11 @@
+WhileLoopStatement
+  = id1:WhileToken __ exp:(CallExpression / RelationalExpression) __ ":" __ "{" __ body:(StatementList __)? "}" {
+      return {
+        type: "WhileLoopStatement",
+        name: id1[0],
+        v: v,
+        exp:exp,
+        body: body
+      };
+    }
+
