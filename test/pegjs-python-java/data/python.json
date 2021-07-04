@@ -1,88 +1,179 @@
 {
-"max": 200,
-"spaces": 3,
-"noSpace": [
-	{"name":"."},
-	{"name":"["},
-	{"name":"]"}
-],
-"wrapBy":[
-		{"name":"+"},
-		{"name":"THEN"},
-		{"name":"CASE"},
-		{"name":","},
-		{"name":"}"}
-	],
-"wrapAt":[
-		{"name":"FROM"},
-		{"name":"WHERE"},
-		{"name":"AND"},
-		{"name":"using"},
-		{"name":"{", "gutter":"+"},
-		{"name":"}", "gutter":"-"}
-	],
-"DT":
-	[
-		{"name":"INT"},
-		{"name":"NUMERIC"},
-		{"name":"VARCHAR"}
-	],
-"keywords":
-	[
-		{"name":"SELECT"},
-		{"name":"INSERT"},
-		{"name":"UPDATE"},
-		{"name":"DELETE"},
-		{"name":"CREATE"},
-		{"name":"ALTER"},
-		{"name":"FROM"},
-		{"name":"WHERE"},
-		{"name":"AND"}
-	],
-"gutter_keywords":
-	[
-		{"name":"SELECT"},
-		{"name":"INSERT"},
-		{"name":"UPDATE"},
-		{"name":"DELETE"},
-		{"name":"CREATE"},
-		{"name":"ALTER"}
-	],
-"align_keywords":
-	[
-		{"name":"FROM"},
-		{"name":"WHERE"},
-		{"name":"AND"},
-		{"name":"ORDER"},
-		{"name":"GROUP"},
-		{"name":"LEFT"},
-		{"name":"RIGHT"}
-	],
-"template":
-	[
-		{
-			"fr":
-			{
-				"name":"CHARINDEX",
-				"args":["1:L","2:L"]
-			},
-			"to":
-			{
-				"name":"INSTR",
-				"args":["2:L","1:L"]
-			}
-		},
-		{
-			"fr":
-			{
-				"name":"char_length",
-				"args":["1:CE"]
-			},
-			"to":
-			{
-				"name":"LENGTH",
-				"args":["1:CE"]
-			}
-		}
-	]
+    "max": 200,
+    "spaces": 3,
+    "noSpace": [
+        {
+            "name": "."
+        },
+        {
+            "name": "["
+        },
+        {
+            "name": "]"
+        }
+    ],
+    "wrapBy": [
+        {
+            "name": "+"
+        },
+        {
+            "name": "THEN"
+        },
+        {
+            "name": "CASE"
+        },
+        {
+            "name": ","
+        },
+        {
+            "name": "}"
+        }
+    ],
+    "wrapAt": [
+        {
+            "name": "FROM"
+        },
+        {
+            "name": "WHERE"
+        },
+        {
+            "name": "AND"
+        },
+        {
+            "name": "using"
+        },
+        {
+            "name": "{",
+            "gutter": "+"
+        },
+        {
+            "name": "}",
+            "gutter": "-"
+        }
+    ],
+    "DT": [
+        {
+            "name": "INT"
+        },
+        {
+            "name": "NUMERIC"
+        },
+        {
+            "name": "VARCHAR"
+        }
+    ],
+    "keywords": [
+        {
+            "name": "SELECT"
+        },
+        {
+            "name": "INSERT"
+        },
+        {
+            "name": "UPDATE"
+        },
+        {
+            "name": "DELETE"
+        },
+        {
+            "name": "CREATE"
+        },
+        {
+            "name": "ALTER"
+        },
+        {
+            "name": "FROM"
+        },
+        {
+            "name": "WHERE"
+        },
+        {
+            "name": "AND"
+        }
+    ],
+    "gutter_keywords": [
+        {
+            "name": "SELECT"
+        },
+        {
+            "name": "INSERT"
+        },
+        {
+            "name": "UPDATE"
+        },
+        {
+            "name": "DELETE"
+        },
+        {
+            "name": "CREATE"
+        },
+        {
+            "name": "ALTER"
+        }
+    ],
+    "align_keywords": [
+        {
+            "name": "FROM"
+        },
+        {
+            "name": "WHERE"
+        },
+        {
+            "name": "AND"
+        },
+        {
+            "name": "ORDER"
+        },
+        {
+            "name": "GROUP"
+        },
+        {
+            "name": "LEFT"
+        },
+        {
+            "name": "RIGHT"
+        }
+    ],
+    "bracketize": true,
+    "bracketkeys" : [
+        { "name": "class" },
+        { "name": "def" },
+        { "name": "for" },
+        { "name": "while" },
+        { "name": "if" },
+        { "name": "elif" },
+        { "name": "else" }
+    ],
+    "template": [
+        {
+            "fr": {
+                "name": "CHARINDEX",
+                "args": [
+                    "1:L",
+                    "2:L"
+                ]
+            },
+            "to": {
+                "name": "INSTR",
+                "args": [
+                    "2:L",
+                    "1:L"
+                ]
+            }
+        },
+        {
+            "fr": {
+                "name": "char_length",
+                "args": [
+                    "1:CE"
+                ]
+            },
+            "to": {
+                "name": "LENGTH",
+                "args": [
+                    "1:CE"
+                ]
+            }
+        }
+    ]
 }

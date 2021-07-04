@@ -1,8 +1,12 @@
 public class Main {
-   {{#each body}}
-   {{> (lookup . 'type') }}
-   {{/each}}
+   public static class PythonMain {
+     public void doExec() {
+       {{#each body}}
+       {{> (lookup . 'type') }}
+       {{/each}}
+     }
+   }
    public static void main(String args[]) {
-      new Main();
+      new PythonMain().doExec();
    }
 }

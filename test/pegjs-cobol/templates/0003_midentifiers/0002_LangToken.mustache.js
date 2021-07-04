@@ -31,6 +31,8 @@ module.exports.data = {
 		{"name":"configuration"},
 		{"name":"linkage"},
 		{"name":"not"},
+		{"name":"redefines"},
+		{"name":"value"},
 		{"name":"section"}
 	],
 	"tokenize": function (text) {

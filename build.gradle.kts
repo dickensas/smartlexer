@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.jetbrains.kotlin.jvm") version "1.3.72"
+    id("org.jetbrains.kotlin.jvm") version "1.5.20-RC"
     application
 }
 
@@ -28,21 +28,21 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.google.guava:guava:29.0-jre")
+    implementation("com.google.guava:guava:30.1.1-jre")
     
-    implementation("org.openjfx:javafx-base:14:${platform}")
-    implementation("org.openjfx:javafx-graphics:14:${platform}")
-    implementation("org.openjfx:javafx-controls:14:${platform}")
-    implementation("org.openjfx:javafx-fxml:14:${platform}")
-    implementation("org.openjfx:javafx-media:14:${platform}")
-    implementation("org.openjfx:javafx-web:14:${platform}")
+    implementation("org.openjfx:javafx-base:16:${platform}")
+    implementation("org.openjfx:javafx-graphics:16:${platform}")
+    implementation("org.openjfx:javafx-controls:16:${platform}")
+    implementation("org.openjfx:javafx-fxml:16:${platform}")
+    implementation("org.openjfx:javafx-media:16:${platform}")
+    implementation("org.openjfx:javafx-web:16:${platform}")
     
-    openjfx("org.openjfx:javafx-base:14:${platform}")
-    openjfx("org.openjfx:javafx-graphics:14:${platform}")
-    openjfx("org.openjfx:javafx-controls:14:${platform}")
-    openjfx("org.openjfx:javafx-fxml:14:${platform}")
-    openjfx("org.openjfx:javafx-media:14:${platform}")
-    openjfx("org.openjfx:javafx-web:14:${platform}")
+    openjfx("org.openjfx:javafx-base:16:${platform}")
+    openjfx("org.openjfx:javafx-graphics:16:${platform}")
+    openjfx("org.openjfx:javafx-controls:16:${platform}")
+    openjfx("org.openjfx:javafx-fxml:16:${platform}")
+    openjfx("org.openjfx:javafx-media:16:${platform}")
+    openjfx("org.openjfx:javafx-web:16:${platform}")
     
     avatarJs("com.oracle:avatar-js:0.10.25-SNAPSHOT")
     avatarJs("com.oracle:libavatar-js-${platform}-x64:0.10.25-SNAPSHOT")

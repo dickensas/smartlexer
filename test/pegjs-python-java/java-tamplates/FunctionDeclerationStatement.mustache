@@ -1,4 +1,3 @@
-
 public void {{{callee.name}}} ({{#each args}} {{#each this}} {{#if name}} {{name}} {{/if}} {{#if value}} {{value}} {{/if}}{{#if @last}}{{else}}, {{/if}} {{/each}} {{/each}}) {
 {{#each body}}
 {{#each this}}
@@ -6,6 +5,5 @@ public void {{{callee.name}}} ({{#each args}} {{#each this}} {{#if name}} {{name
    {{> (lookup . 'type') }}
 {{/if}}
 {{/each}}
-  
 {{/each}}
 }

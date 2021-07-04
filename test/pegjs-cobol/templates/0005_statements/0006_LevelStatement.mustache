@@ -1,0 +1,14 @@
+LevelStatement
+  = (SevenSpace / AreaA) z:"0"? l:DecimalLiteral Spaces? id:(HyphenIdentifier / Identifier)? Spaces? red:(ValueToken / RedefinesToken)?  Spaces? id1:(HyphenIdentifier / Identifier / Literal)? Spaces? pic:PicToken? Spaces? size:CallExpression? Spaces? v:ValueToken? Spaces? value:(HyphenIdentifier / Identifier / Literal)? EOS? {
+      return {
+        type: "LevelStatement",
+        id:id,
+        id1:id1,
+        red:red,
+        z:z,
+        l:l,
+        pic: pic,
+        size: size
+      };
+    }
+  

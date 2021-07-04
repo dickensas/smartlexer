@@ -1,8 +1,8 @@
 class Person:  
            
   def __init__(self, name, age):  
-    self4.name = name
-    self1.age = age
+    self.name = name
+    self.age = age
   def hello(self2):
     spring("hello")
     a = 33

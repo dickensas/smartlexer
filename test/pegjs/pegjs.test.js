@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path")
 
 describe('PEG.js Grammer Java', function () {
-    it('Should parse Java annotation', function () {
+    it('Should parse Java annotation1', function () {
 
 		var dName = __dirname;
 		dName = dName.replace(/\\/g,"/")
@@ -15,15 +15,15 @@ describe('PEG.js Grammer Java', function () {
 		
 		dName = dName.substr(sName.length+1);
 		
-		const grammer = smartlexer.templateGenerate(__dirname, "templates",dName)
+		//const grammer = smartlexer.templateGenerate(__dirname, "templates",dName)
 //		//console.log(grammer1);
 //		const grammer = fs.readFileSync('.settings/my.txt', 'utf8');
         //console.log(grammer);
-		var parser = pegjs.generate(grammer);
+		//var parser = pegjs.generate(grammer);
 
-		const sourceCode = fs.readFileSync("test/pegjs/src/test1.java", "utf8");
+		//const sourceCode = fs.readFileSync("test/pegjs/src/test1.java", "utf8");
 
-		var ast1 = parser.parse(sourceCode);
+		//var ast1 = parser.parse(sourceCode);
 		//console.log(JSON.stringify(ast1));
 
 		/*fs.readFile('test/pegjs/data/java.pegjs', 'utf8' , function(err1, grammer) {
@@ -45,9 +45,9 @@ describe('PEG.js Grammer Java', function () {
 					var smartlexer = require("../../smartlexer.js");
 					//var smartGrammer = smartlexer.toPegJs(JSON.parse(database));
 					//grammer += smartGrammer;
-					var parser = pegjs.generate(grammer);
-					var ast1 = parser.parse(sourceCode);
-					console.log(JSON.stringify(ast1.body[0]));
+					//var parser = pegjs.generate(grammer);
+					//var ast1 = parser.parse(sourceCode);
+					//console.log(JSON.stringify(ast1.body[0]));
 					//console.log(grammer);
 				});
 			});
