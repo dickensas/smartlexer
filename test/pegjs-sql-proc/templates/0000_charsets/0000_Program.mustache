@@ -1,0 +1,147 @@
+// Java Grammar
+// ============
+
+{
+  var tables = new Array()
+
+  function filledArray(count, value) {
+    return Array.apply(null, new Array(count))
+      .map(function() { return value; });
+  }
+
+  function extractOptional(optional, index) {
+    return optional ? optional[index] : null;
+  }
+
+  function extractList(list, index) {
+    return list.map(function(element) {
+        return element[index]; 
+    });
+  }
+  
+  function traverse(x){
+    var arr = [];
+    if(x && x.constructor === Array){
+        for(var i=0;i<x.length;i++){
+            if(!x[i]) {
+                console.log(x)
+                continue;
+            }
+            if(x[i].type === "MemberSequence"){
+                var larr = traverse(x[i].list)
+                for(var j=0;j<larr.length;j++){
+                    arr.push(larr[j]);
+                }
+            }else if(x[i].type === "ConditionSequence"){
+                console.log(x[i].list)
+                var larr = traverse(x[i].list)
+                for(var j=0;j<larr.length;j++){
+                    arr.push(larr[j]);
+                }
+            }else{
+                arr.push(x[i])
+            }
+        }
+    }
+    return arr;
+  }
+  
+  function extractSequenceList(list, index) {
+    return list.map(function(element) {
+        if(element[index].list){
+            element[index].list = traverse( element[index].list );
+        }
+        return element[index]; 
+    });
+  }
+  
+  function buildSequenceList(head, tail, index) {
+    var _x = extractSequenceList(tail, index);
+    if(_x.length>0 && _x[0].list){
+        return [head].concat(_x[0].list);
+    }
+    return [head].concat(_x);
+  }
+  
+  function buildList(head, tail, index) {
+    return [head].concat(extractList(tail, index));
+  }
+  
+  function buildUnionList(head, tail, index) {
+    if(tail && tail.constructor == Array && tail[0] && tail[0].constructor == Array && tail[0].length==1) tail = tail[0]
+    return [head].concat(extractList(tail, index));
+  }
+  
+  function buildTableList(head, tail, alias, index) {
+    if(alias!=null)
+        head.alias = alias.name;
+    
+    head.type = "Table"
+    tables.push(head)
+    
+    if(tail[0])
+        return [head].concat(tail[0][3].list);
+    else
+        return [head];
+  }
+
+  function buildBinaryExpression(head, tail) {
+    return tail.reduce(function(result, element) {
+      return {
+        type: "BinaryExpression",
+        operator: element[1],
+        left: result,
+        right: element[3]
+      };
+    }, head);
+  }
+
+  function buildLogicalExpression(head, tail) {
+    return tail.reduce(function(result, element) {
+      return {
+        type: "LogicalExpression",
+        operator: element[1],
+        left: result,
+        right: element[3]
+      };
+    }, head);
+  }
+
+  function optionalList(value) {
+    return value !== null ? value : [];
+  }
+  
+  function optionalNonEmptyList(value) {
+	var arr = [];
+	if(value && value.constructor === Array){
+		for(var i=0;i<value.length;i++)
+			if(value[i] && value[i].constructor === Object) arr.push(value[i]);
+    }else if(value && value.constructor === Object){
+		arr.push(value)
+	}
+	return value !== null ? arr : [];
+  }
+}
+
+Start
+  = __ program:Program __ { return program; }
+
+
+Program
+  = body:SourceElements? {
+      return {
+        type: "Program",
+        body: optionalList(body)
+      };
+    }
+
+StatementList
+  = head:Statement tail:(__ Statement)* { return buildList(head, tail, 1); }
+
+SourceElements
+  = head:SourceElement tail:(__ SourceElement)* {
+      return buildList(head, tail, 1);
+    }
+
+SourceElement
+  = Statement

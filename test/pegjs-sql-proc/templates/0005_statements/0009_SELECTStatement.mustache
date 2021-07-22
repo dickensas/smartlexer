@@ -1,0 +1,14 @@
+SELECTStatement
+  = id:SELECTToken __ fields:MemberSequence __ from:FROMExpression __ where:WHEREExpression? __ group:GROUPExpression? __ union:UnionSequence? __ order:ORDERExpression? __ EOS {
+      return {
+        type: "SELECTStatement",
+        name:id[0],
+        fields: fields,
+        from: from,
+        where: where,
+        group: group,
+        union: union,
+        order: order
+      };
+    }
+

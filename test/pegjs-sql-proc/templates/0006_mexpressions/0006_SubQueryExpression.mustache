@@ -1,0 +1,13 @@
+SubQueryExpression
+  = "(" __ name:SELECTToken __ fields:MemberSequence __ from:FROMExpression __ where:WHEREExpression? __ group:GROUPExpression? __ union:UnionSequence? __ order:ORDERExpression? __ ")" {
+      return {
+        type: "SubQueryExpression",
+        name: name[0],
+		fields: fields,
+        from: from,
+        where: where,
+        group: group,
+        union: union,
+        order: order
+      };
+    }

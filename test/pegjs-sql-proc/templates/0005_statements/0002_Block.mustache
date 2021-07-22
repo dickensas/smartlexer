@@ -1,0 +1,7 @@
+Block
+  =  BEGINToken __ body:(StatementList __)? ENDToken {
+      return {
+        type: "BlockStatement",
+        body: optionalList(extractOptional(body, 0))
+      };
+    }

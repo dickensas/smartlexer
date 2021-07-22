@@ -1,0 +1,7 @@
+ConditionSequence
+  = head:AssignmentExpression tail:(__ (ANDToken / ORToken) __ ConditionSequence)* {
+      return {
+        type: "ConditionSequence",
+        list: buildList(head, tail, 3)
+      };
+    }

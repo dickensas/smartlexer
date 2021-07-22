@@ -1,0 +1,4 @@
+BitwiseANDExpression
+  = head:EqualityExpression
+    tail:(__ BitwiseANDOperator __ EqualityExpression)*
+    { return buildBinaryExpression(head, tail); }

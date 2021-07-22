@@ -1,0 +1,35 @@
+FutureReservedWord
+  = SELECTToken
+  / INSERTToken
+  / UPDATEToken
+  / INSERTToken
+
+ReservedWord
+  = Keyword
+  / FutureReservedWord
+  / NullLiteral
+
+Identifier
+  = !ReservedWord  name:IdentifierName { return name; }
+
+IdentifierName "identifier"
+  = head:IdentifierStart tail:IdentifierPart* {
+      return {
+        type: "Identifier",
+        name: head + tail.join("")
+      };
+    }
+
+IdentifierStart
+  = UnicodeLetter
+  / "$"
+  / "_"
+  / "\\" sequence:UnicodeEscapeSequence { return sequence; }
+
+IdentifierPart
+  = IdentifierStart
+  / UnicodeCombiningMark
+  / UnicodeDigit
+  / UnicodeConnectorPunctuation
+  / "\u200C"
+  / "\u200D"

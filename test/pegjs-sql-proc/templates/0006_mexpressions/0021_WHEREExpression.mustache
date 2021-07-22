@@ -1,0 +1,9 @@
+WHEREExpression
+  = id:WHEREToken __ conditions:ConditionSequence  {
+      return {
+        type: "WHEREExpression",
+        conditions:conditions,
+        name: id[0]
+      };
+    }
+

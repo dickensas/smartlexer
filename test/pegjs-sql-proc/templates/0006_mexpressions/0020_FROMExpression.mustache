@@ -1,0 +1,9 @@
+FROMExpression
+  = id:FROMToken __ tablesq:TableSequence {
+      return {
+        type: "FROMExpression",
+        name:id[0],
+        tables: tablesq
+      };
+    }
+

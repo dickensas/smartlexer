@@ -1,0 +1,20 @@
+MemberSequence
+  = head:( 
+              (i:Identifier __ "=" __ c:CallExpression { if(i) c.alias = i; return c; }) 
+            / (c:CallExpression __ as:ASToken? __ i:Identifier { if(as) c.as = as[0]; if(i) c.alias = i; return c; }) 
+            / CallExpression 
+            / ( c:SubQueryExpression as:ASToken? i:Identifier { if(as) c.as = as[0]; c.alias = i; return c; } ) 
+            / SubQueryExpression
+            / MemberExpression 
+            / ( c:CASEBlock __ as:ASToken? __ i:Identifier { if(as) c.as = as[0]; c.alias = i; return c; } ) 
+            / CASEBlock 
+          
+          ) 
+          
+          tail:(__ "," __ MemberSequence )* {
+          
+      return {
+        type: "MemberSequence",
+        list: buildSequenceList(head, tail, 3)
+      };
+    }

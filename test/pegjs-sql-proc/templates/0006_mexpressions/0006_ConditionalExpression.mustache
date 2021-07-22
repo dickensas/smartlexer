@@ -1,0 +1,13 @@
+ConditionalExpression
+  = test:LogicalORExpression __
+    "?" __ consequent:AssignmentExpression __
+    ":" __ alternate:AssignmentExpression
+    {
+      return {
+        type: "ConditionalExpression",
+        test: test,
+        consequent: consequent,
+        alternate: alternate
+      };
+    }
+  / LogicalORExpression
