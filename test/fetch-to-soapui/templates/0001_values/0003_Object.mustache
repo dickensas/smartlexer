@@ -1,0 +1,18 @@
+// ----- 4. Objects -----
+
+Object
+  = BeginObject
+    members:(
+      head:Member
+      tail:(ValueSeparator m:Member { return m; })*
+      {
+        var result = {};
+        [head].concat(tail).forEach(function(element) {
+          result[element.name] = element.value;
+        });
+        return result;
+      }
+    )?
+    EndObject
+    { return members !== null ? members: {}; }
+

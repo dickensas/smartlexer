@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="d81e9e27-7cb9-4f70-ab92-f1d4367bb3dc" activeEnvironment="Default" name="Project 2" soapui-version="5.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config">
+<con:settings/>
+<con:testSuite id="9c35d6ce-2e14-4096-937f-70d25ad52232" name="TestSuite 1">
+<con:settings/>
+<con:runType>SEQUENTIAL</con:runType>
+<con:testCase id="93f64c2f-b37f-4903-bebe-3e8b7f96f9e9" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase 1" searchProperties="true">
+<con:settings/>
+<con:testStep type="httprequest" name="HTTP Request" id="c0797430-e3da-4c0b-9942-e05f363819a3">
+<con:settings/>
+<con:config method="{{body.method}}" xsi:type="con:HttpRequest" id="a6428d91-9631-4719-836e-860cb838bb07" name="HTTP Request" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<con:settings>
+<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
+<![CDATA[<xml-fragment xmlns:con="http://eviware.com/soapui/config">
+{{#each body.headers}}
+  <con:entry key="{{@key}}" value="{{{qescape this}}}"/>
+{{/each}}
+</xml-fragment>]]></con:setting>
+</con:settings>
+<con:endpoint><![CDATA[{{{url}}}]]></con:endpoint>
+<con:request><![CDATA[{{{body.body}}}]]></con:request>
+<con:credentials>
+<con:authType>No Authorization</con:authType>
+</con:credentials>
+<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+<con:jmsPropertyConfig/>
+<con:parameters/>
+</con:config>
+</con:testStep>
+<con:properties/>
+</con:testCase>
+<con:properties/>
+</con:testSuite>
+<con:properties/>
+<con:wssContainer/>
+<con:oAuth2ProfileContainer/>
+<con:oAuth1ProfileContainer/>
+<con:sensitiveInformation/>
+</con:soapui-project>

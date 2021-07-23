@@ -6,13 +6,14 @@
 <?import javafx.scene.web.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.collections.FXCollections ?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0"
 	xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="com.zigma.Controller">
 	<children>
 		<WebView fx:id="mywebview" maxHeight="0" maxWidth="0.0"
 			prefHeight="0.0" prefWidth="0.0" visible="false" />
-		<VBox maxHeight="30.0" minHeight="30.0" AnchorPane.leftAnchor="0.0"
+		<VBox maxHeight="60.0" minHeight="60.0" AnchorPane.leftAnchor="0.0"
             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <HBox>
@@ -22,10 +23,37 @@
                          text="test\\sql\\data\\sql.json" />
                     </children>
                 </HBox>
+                <HBox>
+                    <children>
+                        <Label text="From" HBox.hgrow="ALWAYS"/>
+                        <ComboBox fx:id="fromLex" HBox.hgrow="ALWAYS">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="SQL" />
+                                    <String fx:value="Python" />
+                                    <String fx:value="Fetch" />
+                                    <String fx:value="Java" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <Label text="To" HBox.hgrow="ALWAYS"/>
+                        <ComboBox fx:id="toLex"  HBox.hgrow="ALWAYS">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="SQL" />
+                                    <String fx:value="Python" />
+                                    <String fx:value="Fetch" />
+                                    <String fx:value="Java" />
+                                    <String fx:value="SoapUI" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </children>
+                </HBox>
             </children>
         </VBox>
 		<VBox AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0"
-			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
 			<children>
 				<HBox VBox.vgrow="ALWAYS">
 					<children>

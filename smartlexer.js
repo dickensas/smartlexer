@@ -671,6 +671,7 @@ function fixMissingTokens(full_obj, arg_parent, arg_prop, inc) {
 
 }
 
+
 var traverse = function (ast, prev, parent, emit) {
     if (ast && ast.length) {
         for (var i = 0; i < ast.length; i++) {
@@ -736,29 +737,53 @@ var jsConnector = {
     parseToLex: function(data) {
         database = window["database"];
         data = stripXML(data);
-        const ast = flow.parse(data, {
-            type: true,
-            tokens: true,
-            esproposal_class_instance_fields: true,
-            esproposal_class_static_fields: true,
-            esproposal_decorators: true,
-            esproposal_optional_chaining: true,
-            types: true
-        });
-        full_parent_obj = ast; //JSON.parse(JSON.stringify(ast));
-        full_obj = full_parent_obj.body;
-        unranged_tokens = full_parent_obj.tokens;
-
-        rangeArangeTokens(full_parent_obj.tokens);
-        traverse(full_obj, null, null, function(emit_ast) {
-            return javaConnector.emit(emit_ast);
-        });
-        toString(full_obj);
-        javaConnector.showLex(unstripXML(intendedFinalString.join("\r\n")));
+        var fromLex = javaConnector.getFromLex();
+        var toLex = javaConnector.getToLex();
+        var ast = {};
+        if(fromLex == "Fetch" && toLex == "SoapUI") {
+            data = fetchToJson(data);
+            const grammer = templateGenerate(
+                "test/fetch-to-soapui", 
+                "templates", 
+                "test/fetch-to-soapui");
+            ast = parsePegAst(data, grammer)
+            var targetHelper = require("test/fetch-to-soapui/soapui-tamplates/MainTemplate.mustache.js")
+            var targetSource = fs.readFileSync("test/fetch-to-soapui/soapui-tamplates/MainTemplate.mustache", "utf8");
+            for(var _p in targetHelper){
+                if(typeof targetHelper[_p] == "function"){
+                    handlebars.registerHelper(_p,targetHelper[_p]);
+                }
+            }
+            handlebars.registerHelper('qescape', function(variable) {
+              return variable.replace(/(["])/g, '&quot;');
+            });
+            const _content = handlebars.compile(targetSource);
+            var newContent = _content(ast1);
+            javaConnector.showLex(newContent);
+        } else {
+            ast = flow.parse(data, {
+                type: true,
+                tokens: true,
+                esproposal_class_instance_fields: true,
+                esproposal_class_static_fields: true,
+                esproposal_decorators: true,
+                esproposal_optional_chaining: true,
+                types: true
+            });
+            full_parent_obj = ast;
+            full_obj = full_parent_obj.body;
+            unranged_tokens = full_parent_obj.tokens;
+            rangeArangeTokens(full_parent_obj.tokens);
+            traverse(full_obj, null, null, function(emit_ast) {
+                return javaConnector.emit(emit_ast);
+            });
+            toString(full_obj);
+            javaConnector.showLex(unstripXML(intendedFinalString.join("\r\n")));
+        }
     }
 };
 
-function getJsConnector() {
+var getJsConnector = function() {
     console.log = jsConnector.log;
     return jsConnector;
 };
@@ -840,7 +865,7 @@ function unstripXML(joinedStr) {
     return joinedStr;
 }
 
-toPegJs = function(database) {
+var toPegJs = function(database) {
     var pegStr = "\r\n\r\n";
     var pegDefStr = "\r\n\r\n";
     var pegSpecialStr = "\r\n\r\n";
@@ -873,6 +898,7 @@ toPegJs = function(database) {
     }
     return pegStr + pegDefStr + pegSpecialStr;
 };
+
 
 var countSpace = function(current) {
     var spaceCount = 0;
@@ -974,6 +1000,8 @@ var bracketize = function(sourceCode) {
     }
     return newSourceCode;
 }
+
+
 var templateGenerate = function(directory, inTemplateDir, dName, inDatabase) {
     const pegjs = require('pegjs');
     const handlebars = require('handlebars');
@@ -1056,6 +1084,18 @@ var templateGenerate = function(directory, inTemplateDir, dName, inDatabase) {
     return grammer;
 }
 
+var parsePegAst = function(inSourceCode, inGrammer, inDatabase) {
+    const pegjs = require('pegjs');
+    if(inDatabase){
+        database = JSON.parse(inDatabase);
+    }else{
+        database = {};
+    }
+    var parser = pegjs.generate(inGrammer);
+    var ast = parser.parse(inSourceCode);
+    return ast;
+}
+
 var parsePeg = function(inSourceCode, inGrammer, inDatabase) {
     const pegjs = require('pegjs');
     if(inDatabase){
@@ -1071,6 +1111,7 @@ var parsePeg = function(inSourceCode, inGrammer, inDatabase) {
     toString(full_obj);
     return intendedFinalString.join("\n");
 }
+
 
 var parse = function(argdatabase, argsource, arglistener) {
     const fs = require("fs")
@@ -1104,6 +1145,37 @@ var parse = function(argdatabase, argsource, arglistener) {
 };
 
 
+var fetchToJson = function(inSourceCode) {
+    inSourceCode = inSourceCode.trim();
+        
+    var url = inSourceCode;
+    url = url.substring(6)
+    var firstCurl = url.indexOf('{')
+    url = url.substring(0, firstCurl);
+    url = url.trim();
+    if(url.endsWith(","))
+        url = url.substring(0,url.length-1)
+    
+    if(inSourceCode.endsWith(";"))
+        inSourceCode = inSourceCode.substring(0,inSourceCode.length-1)
+    if(inSourceCode.endsWith(")"))
+        inSourceCode = inSourceCode.substring(0,inSourceCode.length-1)
+    
+    inSourceCode = '{"url": ' 
+    + url
+    + ","
+    + '"body":'
+    + inSourceCode.substring(6 + url.length+1, inSourceCode.length)
+    + '}';
+    return inSourceCode;
+}
+
+
+if (!(typeof module != 'undefined' && typeof module.exports != 'undefined')) {
+    module = {};
+    module.exports = {}
+}
+
 if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
     module.exports.toPegJs = toPegJs;
     module.exports.parse = parse;
@@ -1113,6 +1185,8 @@ if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
     module.exports.toString = toString;
     module.exports.intendedFinalString = intendedFinalString;
     module.exports.parsePeg = parsePeg;
+    module.exports.parsePegAst = parsePegAst;
+    module.exports.getJsConnector = getJsConnector;
 }
 
 if (!(typeof global.it === 'function')) {
@@ -1142,6 +1216,7 @@ if (!(typeof global.it === 'function')) {
         }
     }
 }
+console.log("detecting broser....")
 if (typeof navigator !== 'undefined' && navigator.appVersion) {
     if (navigator.appVersion.indexOf('PhantomJS') != -1) {
         String.prototype.padStart = function(len, ch) {

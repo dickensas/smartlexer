@@ -1,0 +1,12 @@
+// ----- 5. Arrays -----
+
+Array
+  = BeginArray
+    values:(
+      head:Value
+      tail:(ValueSeparator v:Value { return v; })*
+      { return [head].concat(tail); }
+    )?
+    EndArray
+    { return values !== null ? values : []; }
+

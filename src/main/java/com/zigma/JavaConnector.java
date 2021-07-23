@@ -6,8 +6,9 @@ import java.util.Scanner;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -15,13 +16,13 @@ import netscape.javascript.JSObject;
 public class JavaConnector {
     protected static JSObject javascriptConnector;
     protected static Scene scene;
-
+    protected static WebEngine webEngine;
     public JavaConnector(final Scene scene) {
         this.scene = scene;
 
         WebView webview = (WebView) this.scene.lookup("#mywebview");
-        final WebEngine webEngine = webview.getEngine();
-
+        webEngine = webview.getEngine();
+        
         JSObject window = (JSObject) webEngine.executeScript("window");
         window.setMember("javaConnector", this);
         Button button = (Button) this.scene.lookup("#mybutton");
@@ -32,9 +33,7 @@ public class JavaConnector {
             String dbLocTxt = dbLoc.getText();
             String database = null;
             if(dbLocTxt!=null && !dbLocTxt.trim().equals("")) {
-                System.out.print("Hi1");
                 database = new Scanner(new File(dbLocTxt)).useDelimiter("\\Z").next();
-                System.out.print("Hi2");
             }else {
                 database = new Scanner(new File("test\\sql\\data\\sql.json")).useDelimiter("\\Z").next();
             }
@@ -59,6 +58,16 @@ public class JavaConnector {
     public void showLex(String sql) {
         TextArea txt = (TextArea) this.scene.lookup("#trgLex");
         txt.setText(sql);
+    }
+    
+    public String getFromLex() {
+    	ComboBox fromLex = (ComboBox) this.scene.lookup("#fromLex");
+    	return (String)fromLex.getValue();
+    }
+    
+    public String getToLex() {
+    	ComboBox toLex = (ComboBox) this.scene.lookup("#toLex");
+    	return (String)toLex.getValue();
     }
 
     public JSObject emit(JSObject obj) {
