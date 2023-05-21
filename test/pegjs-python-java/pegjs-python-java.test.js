@@ -22,29 +22,32 @@ describe('PEG.js Grammer Python To Java', function () {
 		
 		var parser = pegjs.generate(grammer);
 
-		const sourceCode = fs.readFileSync("test/pegjs-python-java/src/test1.py", "utf8")
+		const sourceCode = smartlexer.readFileSync(fs, "test/pegjs-python-java/src/test1.py")
 		
 		var newSourceCode = smartlexer.bracketize(sourceCode);
 
 		var ast1 = parser.parse(newSourceCode);
 
 		var targetHelper = require("./java-tamplates/MainTemplate.mustache.js")
-	    var targetSource = fs.readFileSync("test/pegjs-python-java/java-tamplates/MainTemplate.mustache", "utf8");
+	    var targetSource = smartlexer.readFileSync(fs, "test/pegjs-python-java/java-tamplates/MainTemplate.mustache");
 		for(var _p in targetHelper){
 			if(typeof targetHelper[_p] == "function"){
 				handlebars.registerHelper(_p,targetHelper[_p]);
 			}
 		}
 		
-		var files = fs.readdirSync("test/pegjs-python-java/java-tamplates");
-		files = files.filter(function(file) {
-		    return path.extname(file).toLowerCase() === ".mustache" && file != "MainTemplate.mustache";
-		});
+		var files1 = smartlexer.readdirSync(fs, "test/pegjs-python-java/java-tamplates");
+        var files = []
+        for( var i =0 ;i<files1.length;i++) {
+			if(path.extname(files1[i]).toLowerCase() === ".mustache" && files1[i] != "MainTemplate.mustache") {
+				files.push(files1[i])
+			}
+		}
 		
 		for(var i=0; i<files.length;i++){
 			var file = files[i];
 			var label = file.substr(0,file.indexOf("."));
-			var content = fs.readFileSync("test/pegjs-python-java/java-tamplates/" + file, 'utf8');
+			var content = smartlexer.readFileSync(fs,"test/pegjs-python-java/java-tamplates/" + file);
 			const _content = handlebars.compile(content);
 			handlebars.registerPartial(label, _content)
 		}

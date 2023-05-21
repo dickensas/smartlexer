@@ -1,4 +1,4 @@
-for( {{#v}}{{> (lookup . 'type') }}{{/v}} : {{#exp}}{{> (lookup . 'type') }}{{/exp}} ) {
+{{{state "for"}}}for( {{#v}}{{> (lookup . 'type') }}{{/v}} : {{#exp}}{{> (lookup . 'type') }}{{/exp}} ) {
 {{#each body}}
 {{#each this}}
 {{#if type}}

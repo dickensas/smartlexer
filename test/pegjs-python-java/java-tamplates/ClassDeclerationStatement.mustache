@@ -1,4 +1,4 @@
-public {{{name}}} {{{id.name}}} {
+{{{state "class"}}}{{{name}}} {{{cname id.name}}} {
    {{#each body}}
       {{#each this}}
       {{#if type}}
@@ -6,4 +6,5 @@ public {{{name}}} {{{id.name}}} {
       {{/if}}
       {{/each}}
    {{/each}}
+   {{{globalMembers}}}
 }

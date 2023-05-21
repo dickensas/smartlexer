@@ -1,1 +1,1 @@
-{{#each expressions}}{{> (lookup . 'type') }}{{#if @last}}{{else}}, {{/if}}{{/each}}
+{{{state "sequence"}}}{{#each expressions}}{{> (lookup . 'type') }}{{#if @last}}{{else}}, {{/if}}{{/each}}
