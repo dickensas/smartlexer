@@ -9,21 +9,29 @@ The primary objective of this utility is to transform parameters and rename func
 This application uses flow-parser, use the below command to install flow-parser
 
 ```
-npm install flow-parser --save`
+npm install flow-parser --save
 ```
 
 ### PEG.js
 This application uses PEG.js for advanced parsing, use the below command to install PEG.js
 
 ```
-npm install pegjs --save`
+npm install pegjs --save
 ```
 
 ### Handlebars
 This application uses Handlebars for advanced parsing, use the below command to install Handlebars
 
 ```
-npm install handlebars --save`
+npm install handlebars --save
+```
+
+### Browserify
+This application uses Browserify to make the javascript work in JavaFX as a standalone application
+
+```
+npm install browserify --save
+browserify smartlexer.js --standalone smartlexer -v -o > bundle.js
 ```
 
 ## Optional dependencies
@@ -102,7 +110,9 @@ This file should be named as "database.json" and put in the root folder or passe
 - [x] 14  - PEG.js Testing
 - [x] 15  - Mocha Testing
 - [x] 16  - Handlebars + PEG.js idea
-- [-] 17  - Python PEG.js Grammer (In Progress)
+- [x] 18  - Use handlebars to make the javascript work inside JavaFX
+- [x] 19  - fetch syntax to Soap UI XML
+- [-] 20  - Python PEG.js Grammer (In Progress)
 
 ## Usage GUI (Requires Java)
 The code is ready to execute

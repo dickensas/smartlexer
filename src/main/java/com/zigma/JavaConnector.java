@@ -1,7 +1,11 @@
 package com.zigma;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import javafx.scene.Scene;
@@ -79,5 +83,25 @@ public class JavaConnector {
             JSObject expressions = (JSObject) obj.getMember("expressions");
         }
         return obj;
+    }
+    
+    public String readdirSync(String dirName) {
+    	return String.join(",",new File(dirName).list());
+    }
+    
+    public String readFileSync(String fname) throws Exception {
+        System.out.println(fname);
+        BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(fname)));
+        String line= buffer.readLine();
+        StringBuffer sb = new StringBuffer();
+        sb.append(line + "\r\n");
+        while (line != null){
+            line= buffer.readLine();
+            if(line!=null) {
+            	sb.append(line + "\r\n");
+            }
+        }
+        buffer.close();
+        return sb.toString();
     }
 }

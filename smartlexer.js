@@ -34,7 +34,6 @@ function isWrapAt(key) {
     if (!database.wrapAt)
         return false;
     for (var i = 0; i < database.wrapAt.length; i++) {
-        //console.log(key);
         if (key && key.toLowerCase() === database.wrapAt[i].name.toLowerCase()) {
             if (database.wrapAt[i].gutter === "+") {
                 gutter += spaces;
@@ -723,6 +722,22 @@ var traverse = function (ast, prev, parent, emit) {
     }
 }
 
+var readFileSync = function(fs, fileName) {
+	if(fs.readFileSync) {
+    	return fs.readFileSync(fileName, "utf8");
+    }else if(javaConnector.readFileSync){
+		return javaConnector.readFileSync(fileName);
+	}
+}
+
+var readdirSync = function(fs, dirName) {
+	if(fs.readdirSync) {
+    	return fs.readdirSync(dirName);
+    }else if(javaConnector.readdirSync){
+		return javaConnector.readdirSync(dirName).split(",");
+	}
+}
+
 var jsConnector = {
     log: function(txt) {
         javaConnector.log(txt);
@@ -747,8 +762,10 @@ var jsConnector = {
                 "templates", 
                 "test/fetch-to-soapui");
             ast = parsePegAst(data, grammer)
-            var targetHelper = require("test/fetch-to-soapui/soapui-tamplates/MainTemplate.mustache.js")
-            var targetSource = fs.readFileSync("test/fetch-to-soapui/soapui-tamplates/MainTemplate.mustache", "utf8");
+            var targetHelper = require("./test/fetch-to-soapui/soapui-tamplates/MainTemplate.mustache.js")
+            var fs = require("fs")
+            var handlebars = require("handlebars")
+            var targetSource = readFileSync(fs, "./test/fetch-to-soapui/soapui-tamplates/MainTemplate.mustache");
             for(var _p in targetHelper){
                 if(typeof targetHelper[_p] == "function"){
                     handlebars.registerHelper(_p,targetHelper[_p]);
@@ -758,7 +775,7 @@ var jsConnector = {
               return variable.replace(/(["])/g, '&quot;');
             });
             const _content = handlebars.compile(targetSource);
-            var newContent = _content(ast1);
+            var newContent = _content(ast);
             javaConnector.showLex(newContent);
         } else {
             ast = flow.parse(data, {
@@ -1013,27 +1030,29 @@ var templateGenerate = function(directory, inTemplateDir, dName, inDatabase) {
     var jsonDb = {};
     var partials = {};
     var sourseTemplatePath = path.join(directory, inTemplateDir);
-    var folders = fs.readdirSync(sourseTemplatePath);
+    var folders = readdirSync(fs, sourseTemplatePath);
 
     var inc = 0;
     for (var x = 0; x < folders.length; x++) {
         var directoryPath = path.join(directory, inTemplateDir + '/' + folders[x]);
-        var label = folders[x].substr(5);
+        var label = (""+folders[x]).substr(5);
         label = label[0].toUpperCase() + label.substr(1, label.length - 2);
-
-        var files = fs.readdirSync(directoryPath);
-        files = files.filter(function(file) {
-            return path.extname(file).toLowerCase() === ".mustache";
-        });
+        var files1 = readdirSync(fs, directoryPath);
+        var files = []
+        for( var i =0 ;i<files1.length;i++) {
+			if(path.extname(files1[i]).toLowerCase() === ".mustache") {
+				files.push(files1[i])
+			}
+		}
         inc = 0;
 
         for (var i = 0; i < files.length; i++) {
-            var file = files[i];
+            var file = ""+files[i];
             var localData = {};
             try {
                 var _ldata = require("./" + dName + "/" + inTemplateDir + "/" + folders[x] + "/" + file + ".js");
 
-                if (_ldata.data) {
+                if (_ldata && _ldata.data) {
                     localData = _ldata.data;
                     for (var _p in localData) {
                         if (typeof localData[_p] == "function") {
@@ -1042,13 +1061,12 @@ var templateGenerate = function(directory, inTemplateDir, dName, inDatabase) {
                     }
                 }
             } catch (ex) { }
-            var content = fs.readFileSync(dName + "/" + inTemplateDir + "/" + folders[x] + "/" + file, 'utf8');
+            var content = readFileSync(fs, dName + "/" + inTemplateDir + "/" + folders[x] + "/" + file, 'utf8');
 
             const _content = handlebars.compile(content);
             content = _content(localData);
             file = file.substr(0, file.indexOf("."));
             file = file.substr(5);
-            //console.log(file);
             partials[file] = content;
             template = template + "\r\n{{> " + file + "}}\r\n";
 
@@ -1058,13 +1076,13 @@ var templateGenerate = function(directory, inTemplateDir, dName, inDatabase) {
                 }
             }
         }
-
+        
         for (var i in files) {
             var file = files[i];
             if (file.toLowerCase().endsWith('.js')) continue
             file = file.substr(0, file.indexOf("."));
             file = file.substr(5);
-
+            
             if (i == 0) {
                 template = template + "\r\n" + label + "\r\n";
                 template = template + "  = " + file + "\r\n";
@@ -1079,7 +1097,6 @@ var templateGenerate = function(directory, inTemplateDir, dName, inDatabase) {
     }
 
     const temp1 = handlebars.compile(template);
-
     const grammer = temp1(jsonData);
     return grammer;
 }
@@ -1170,11 +1187,9 @@ var fetchToJson = function(inSourceCode) {
     return inSourceCode;
 }
 
-
-if (!(typeof module != 'undefined' && typeof module.exports != 'undefined')) {
-    module = {};
-    module.exports = {}
-}
+console.log("detecting module....")
+module = typeof module != 'undefined' && typeof module.exports != 'undefined'? module: {}
+module.exports = typeof module != 'undefined' && typeof module.exports != 'undefined'? module.exports: {}
 
 if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
     module.exports.toPegJs = toPegJs;
@@ -1187,6 +1202,23 @@ if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
     module.exports.parsePeg = parsePeg;
     module.exports.parsePegAst = parsePegAst;
     module.exports.getJsConnector = getJsConnector;
+    module.exports.readFileSync = readFileSync;
+    module.exports.readdirSync = readdirSync;
+} 
+
+if (typeof global != 'undefined' && typeof global.window != 'undefined') {
+	global.window.toPegJs = toPegJs;
+	global.window.parse = parse;
+	global.window.traverse = traverse;
+    global.window.templateGenerate = templateGenerate;
+    global.window.bracketize = bracketize;
+    global.window.toString = toString;
+    global.window.intendedFinalString = intendedFinalString;
+    global.window.parsePeg = parsePeg;
+    global.window.parsePegAst = parsePegAst;
+    global.window.getJsConnector = getJsConnector;
+    global.window.readFileSync = readFileSync;
+    global.window.readdirSync = readdirSync;
 }
 
 if (!(typeof global.it === 'function')) {
@@ -1216,17 +1248,17 @@ if (!(typeof global.it === 'function')) {
         }
     }
 }
-console.log("detecting broser....")
+console.log("detecting browser....")
 if (typeof navigator !== 'undefined' && navigator.appVersion) {
     if (navigator.appVersion.indexOf('PhantomJS') != -1) {
         String.prototype.padStart = function(len, ch) {
             return Array(len - this.length + 1).join(ch) + this;
         }
         console.log("PhantomJS detected " + navigator.appVersion.substr(navigator.appVersion.indexOf("PhantomJS")).split(" ")[0])
+        console.log(process.argv)
         const fs = require("fs");
-        const system = require('system');
-        const databaseJson = system.args[2] ? system.args[2] : 'test\\sql\\data\\sql.json';
-        const source = system.args[1] ? system.args[1] : 'test\\sql\\src\\test1.sql';
+        const databaseJson = process.argv[2] ? process.argv[2] : 'test\\sql\\data\\sql.json';
+        const source = process.argv[1] ? process.argv[1] : 'test\\sql\\src\\test1.sql';
         const db = fs.open(databaseJson, 'r').read();
         const src = fs.open(source, 'r').read();
         var strP = parse(db, src);
