@@ -1,0 +1,13 @@
+public class PythonMain {
+   public <T> void print(T arg) {
+     System.out.println(arg);
+   }
+   public void doExec() {
+     {{#each body}}
+     {{> (lookup . 'type') }}
+     {{/each}}
+   }
+   public static void main(String args[]) {
+      new PythonMain().doExec();
+   }
+}

@@ -28,10 +28,38 @@ describe('PEG.js Grammer Cobol', function () {
 		var parser = pegjs.generate(grammer);
 //		
 		console.log("parser ok")
-		const sourceCode = fs.readFileSync("test/pegjs-cobol/src/test1.cob", "utf8")
+		const sourceCode = smartlexer.readFileSync(fs, "test/pegjs-cobol/src/test1.cob", "utf8")
 		
 		var ast1 = parser.parse(sourceCode);
 		console.log(JSON.stringify(ast1));
+		
+		var targetHelper = require("./java-tamplates/MainTemplate.mustache.js")
+	    var targetSource = smartlexer.readFileSync(fs, "test/pegjs-cobol/java-tamplates/MainTemplate.mustache");
+		for(var _p in targetHelper){
+			if(typeof targetHelper[_p] == "function"){
+				handlebars.registerHelper(_p,targetHelper[_p]);
+			}
+		}
+		
+		var files1 = smartlexer.readdirSync(fs, "test/pegjs-cobol/java-tamplates");
+        var files = []
+        for( var i =0 ;i<files1.length;i++) {
+			if(path.extname(files1[i]).toLowerCase() === ".mustache" && files1[i] != "MainTemplate.mustache") {
+				files.push(files1[i])
+			}
+		}
+		
+		for(var i=0; i<files.length;i++){
+			var file = files[i];
+			var label = file.substr(0,file.indexOf("."));
+			var content = smartlexer.readFileSync(fs,"test/pegjs-cobol/java-tamplates/" + file);
+			const _content = handlebars.compile(content);
+			handlebars.registerPartial(label, _content)
+		}
+		
+	    const _content = handlebars.compile(targetSource);
+		var newContent = _content(ast1);
+		console.log(newContent)
 		
 		/*function countSpace(current){
 			var spaceCount = 0;

@@ -1,0 +1,7 @@
+{{#each body}}
+{{#each this}}
+{{#if type}}
+System.out.println({{> (lookup . 'type') }});
+{{/if}}
+{{/each}}
+{{/each}}
