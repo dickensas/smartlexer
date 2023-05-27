@@ -103,13 +103,13 @@ This file should be named as "database.json" and put in the root folder or passe
 - [ ] 8 - Advanced intent beautifier
 - [ ] 9 - EXCEL/CSV as template data source
 - [-] 10  - Test programming languages like Java, Kotlin, C... etc.,
-- [ ] 10  - XML transform facility
-- [ ] 11  - Lex path detection and replace strategy
-- [x] 12  - Node.js command line support
-- [x] 13  - Parse Simple C++ without missing any tokens
-- [x] 14  - PEG.js Testing
-- [x] 15  - Mocha Testing
-- [x] 16  - Handlebars + PEG.js idea
+- [ ] 11  - XML transform facility
+- [ ] 12  - Lex path detection and replace strategy
+- [x] 13  - Node.js command line support
+- [x] 14  - Parse Simple C++ without missing any tokens
+- [x] 15  - PEG.js Testing
+- [x] 16  - Mocha Testing
+- [x] 17  - Handlebars + PEG.js idea
 - [x] 18  - Use handlebars to make the javascript work inside JavaFX
 - [x] 19  - fetch syntax to Soap UI XML
 - [-] 20  - Python PEG.js Grammer (In Progress)
